@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratorio Database - Modello Logico Interattivo</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            200: '#bae0fd',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+        }
+        .pk-badge {
+            background-color: #dbeafe;
+            color: #1e40af;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.15rem 0.4rem;
+            border-radius: 0.25rem;
+            border: 1px solid #bfdbfe;
+        }
+        .fk-badge {
+            background-color: #fef3c7;
+            color: #92400e;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.15rem 0.4rem;
+            border-radius: 0.25rem;
+            border: 1px solid #fde68a;
+        }
+        .tab-btn {
+            transition: all 0.2s ease-in-out;
+            white-space: nowrap;
+        }
+        .tab-btn.active {
+            background-color: #ffffff;
+            color: #1e293b;
+            font-weight: 600;
+            border-bottom: 3px solid #3b82f6;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-slate-50 text-slate-800">
+
+    <!-- HEADER / INTESTAZIONE DIDATTICA -->
+    <header class="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <h1 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/>
+                    </svg>
+                    Laboratorio Modello Logico: <span class="text-blue-600">Gestione Magazzino & Vendite</span>
+                </h1>
+                <p class="text-xs text-slate-500 mt-0.5">Sperimentazione pratica sulle dipendenze funzionali e l'integrità referenziale</p>
+            </div>
+            <div class="flex items-center gap-2 self-end md:self-auto">
+                <button onclick="resetToSampleData()" class="px-3 py-1.5 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg border border-slate-300 transition flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                    Ripristina Dati Esempio
+                </button>
+                <button onclick="clearAllData()" class="px-3 py-1.5 text-xs bg-red-50 hover:bg-red-100 text-red-600 rounded-lg border border-red-200 transition flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    Svuota Database
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- AREA NOTIFICHE DIDATTICHE -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full mt-4">
+        <div id="notification-box" class="hidden p-4 rounded-xl border transition-all duration-300 flex items-start justify-between shadow-sm">
+            <div class="flex items-start gap-3">
+                <div id="notification-icon" class="mt-0.5"></div>
+                <div>
+                    <h4 id="notification-title" class="font-semibold text-sm"></h4>
+                    <p id="notification-message" class="text-xs mt-1 whitespace-pre-line leading-relaxed"></p>
+                </div>
+            </div>
+            <button onclick="closeNotification()" class="text-slate-400 hover:text-slate-600 ml-4">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full my-4 flex-grow">
+        
+        <!-- SCHEDA SPIEGAZIONE DIDA -->
+        <div class="bg-slate-100 border border-slate-200 rounded-xl p-3.5 mb-4 text-xs text-slate-600 leading-relaxed">
+            <div class="font-semibold text-slate-800 flex items-center gap-2 mb-1">
+                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                Guida Pratica per lo Studente:
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mt-2">
+                <div class="bg-white p-2 rounded border border-slate-200">
+                    <span class="font-bold text-slate-700">1. Chiavi Primarie (PK):</span> Assegnate automaticamente dal sistema per garantire la certezza d'identità dei record.
+                </div>
+                <div class="bg-white p-2 rounded border border-slate-200">
+                    <span class="font-bold text-slate-700">2. Chiavi Esterne (FK):</span> Selezionabili solo tra i record già inseriti per prevenire puntamenti ad entità inesistenti.
+                </div>
+                <div class="bg-white p-2 rounded border border-slate-200">
+                    <span class="font-bold text-slate-700">3. Integrità Referenziale:</span> L'eliminazione viene bloccata o eseguita in cascata a seconda del vincolo dell'associazione.
+                </div>
+            </div>
+        </div>
+
+        <!-- NAVIGAZIONE TABELLE -->
+        <div class="flex border-b border-slate-200 overflow-x-auto bg-slate-200/60 p-1 rounded-t-xl gap-1">
+            <button onclick="switchTab('categoria')" id="tab-btn-categoria" class="tab-btn px-3 py-2 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 flex items-center gap-1.5">
+                <span>1. Categoria</span>
+                <span id="badge-count-categoria" class="bg-slate-300 text-slate-700 px-1.5 py-0.5 rounded-full text-[10px]">0</span>
+            </button>
+            <button onclick="switchTab('prodotto')" id="tab-btn-prodotto" class="tab-btn px-3 py-2 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 flex items-center gap-1.5">
+                <span>2. Prodotto</span>
+                <span id="badge-count-prodotto" class="bg-slate-300 text-slate-700 px-1.5 py-0.5 rounded-full text-[10px]">0</span>
+            </button>
+            <button onclick="switchTab('fornitore')" id="tab-btn-fornitore" class="tab-btn px-3 py-2 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 flex items-center gap-1.5">
+                <span>3. Fornitore</span>
+                <span id="badge-count-fornitore" class="bg-slate-300 text-slate-700 px-1.5 py-0.5 rounded-full text-[10px]">0</span>
+            </button>
+            <button onclick="switchTab('fornitore_prodotto')" id="tab-btn-fornitore_prodotto" class="tab-btn px-3 py-2 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 flex items-center gap-1.5">
+                <span>4. Fornitore-Prodotto</span>
+                <span id="badge-count-fornitore_prodotto" class="bg-slate-300 text-slate-700 px-1.5 py-0.5 rounded-full text-[10px]">0</span>
+            </button>
+            <button onclick="switchTab('cliente')" id="tab-btn-cliente" class="tab-btn px-3 py-2 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 flex items-center gap-1.5">
+                <span>5. Cliente</span>
+                <span id="badge-count-cliente" class="bg-slate-300 text-slate-700 px-1.5 py-0.5 rounded-full text-[10px]">0</span>
+            </button>
+            <button onclick="switchTab('acquisto')" id="tab-btn-acquisto" class="tab-btn px-3 py-2 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 flex items-center gap-1.5">
+                <span>6. Acquisto (Scontrino Cliente)</span>
+                <span id="badge-count-acquisto" class="bg-slate-300 text-slate-700 px-1.5 py-0.5 rounded-full text-[10px]">0</span>
+            </button>
+            <button onclick="switchTab('riga_acquisto')" id="tab-btn-riga_acquisto" class="tab-btn px-3 py-2 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 flex items-center gap-1.5">
+                <span>7. Riga Acquisto</span>
+                <span id="badge-count-riga_acquisto" class="bg-slate-300 text-slate-700 px-1.5 py-0.5 rounded-full text-[10px]">0</span>
+            </button>
+            <button onclick="switchTab('ordine')" id="tab-btn-ordine" class="tab-btn px-3 py-2 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 flex items-center gap-1.5">
+                <span>8. Ordine (Rifornimento Fornitore)</span>
+                <span id="badge-count-ordine" class="bg-slate-300 text-slate-700 px-1.5 py-0.5 rounded-full text-[10px]">0</span>
+            </button>
+            <button onclick="switchTab('riga_ordine')" id="tab-btn-riga_ordine" class="tab-btn px-3 py-2 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 flex items-center gap-1.5">
+                <span>9. Riga Ordine</span>
+                <span id="badge-count-riga_ordine" class="bg-slate-300 text-slate-700 px-1.5 py-0.5 rounded-full text-[10px]">0</span>
+            </button>
+        </div>
+
+        <!-- CONTENUTO DELLE SEZIONI TABELLARI -->
+        <div class="bg-white rounded-b-xl border border-slate-200 p-5 shadow-sm min-h-[420px]">
+            
+            <!-- 1. CATEGORIA -->
+            <div id="tab-content-categoria" class="tab-content hidden space-y-6">
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        Nuovo Inserimento: CATEGORIA
+                    </h3>
+                    <form onsubmit="insertCategoria(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">ID_Categoria <span class="pk-badge">PK Auto</span></label>
+                            <input type="text" id="categoria-id-preview" disabled class="w-full bg-slate-200/60 border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-600 font-mono font-bold cursor-not-allowed">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Nome Categoria *</label>
+                            <input type="text" id="categoria-nome" required placeholder="Es. Elettronica, Antinfiammatori..." class="w-full border border-slate-300 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 outline-none">
+                        </div>
+                        <div>
+                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium py-2 px-3 rounded-lg transition shadow-sm">
+                                Salva Categoria
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div>
+                    <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Tabella: CATEGORIA</h4>
+                    <div class="overflow-x-auto border border-slate-200 rounded-xl">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead class="bg-slate-100 text-slate-600 border-b border-slate-200">
+                                <tr>
+                                    <th class="p-3 font-semibold"><span class="pk-badge">ID_Categoria</span></th>
+                                    <th class="p-3 font-semibold">Nome</th>
+                                    <th class="p-3 font-semibold text-right">Azione</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-categoria-body" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. PRODOTTO -->
+            <div id="tab-content-prodotto" class="tab-content hidden space-y-6">
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        Nuovo Inserimento: PRODOTTO (Catalogo Farmacia)
+                    </h3>
+                    <form onsubmit="insertProdotto(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 items-end">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">ID_Prodotto <span class="pk-badge">PK Auto</span></label>
+                            <input type="text" id="prodotto-id-preview" disabled class="w-full bg-slate-200/60 border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-600 font-mono font-bold cursor-not-allowed">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-amber-800 mb-1">Categoria <span class="fk-badge">FK_Categoria</span></label>
+                            <select id="prodotto-fk-categoria" required class="w-full border border-amber-300 bg-amber-50/30 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-amber-500/20 focus:border-amber-600 outline-none"></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Nome Prodotto *</label>
+                            <input type="text" id="prodotto-nome" required placeholder="Es. Tachipirina 500mg..." class="w-full border border-slate-300 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Prezzo Pubblico (€) *</label>
+                            <input type="number" id="prodotto-prezzo" step="0.01" min="0" required placeholder="10.00" class="w-full border border-slate-300 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Giacenza Magazzino *</label>
+                            <input type="number" id="prodotto-giacenza" min="0" required placeholder="100" value="50" class="w-full border border-slate-300 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 outline-none">
+                        </div>
+                        <div>
+                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium py-2 px-3 rounded-lg transition shadow-sm">
+                                Salva Prodotto
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div>
+                    <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Tabella: PRODOTTO</h4>
+                    <div class="overflow-x-auto border border-slate-200 rounded-xl">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead class="bg-slate-100 text-slate-600 border-b border-slate-200">
+                                <tr>
+                                    <th class="p-3 font-semibold"><span class="pk-badge">ID_Prodotto</span></th>
+                                    <th class="p-3 font-semibold"><span class="fk-badge">ID_Categoria</span></th>
+                                    <th class="p-3 font-semibold">Nome Prodotto</th>
+                                    <th class="p-3 font-semibold">Prezzo Pubblico (€)</th>
+                                    <th class="p-3 font-semibold">Giacenza Magazzino</th>
+                                    <th class="p-3 font-semibold text-right">Azione</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-prodotto-body" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. FORNITORE -->
+            <div id="tab-content-fornitore" class="tab-content hidden space-y-6">
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        Nuovo Inserimento: FORNITORE
+                    </h3>
+                    <form onsubmit="insertFornitore(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-end">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">ID_Fornitore <span class="pk-badge">PK Auto</span></label>
+                            <input type="text" id="fornitore-id-preview" disabled class="w-full bg-slate-200/60 border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-600 font-mono font-bold cursor-not-allowed">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Ragione Sociale *</label>
+                            <input type="text" id="fornitore-nome" required placeholder="Es. Logistica Pharma S.r.l." class="w-full border border-slate-300 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Telefono / Contatto *</label>
+                            <input type="text" id="fornitore-telefono" required placeholder="Es. 080-1234567" class="w-full border border-slate-300 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 outline-none">
+                        </div>
+                        <div>
+                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium py-2 px-3 rounded-lg transition shadow-sm">
+                                Salva Fornitore
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div>
+                    <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Tabella: FORNITORE</h4>
+                    <div class="overflow-x-auto border border-slate-200 rounded-xl">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead class="bg-slate-100 text-slate-600 border-b border-slate-200">
+                                <tr>
+                                    <th class="p-3 font-semibold"><span class="pk-badge">ID_Fornitore</span></th>
+                                    <th class="p-3 font-semibold">Ragione Sociale</th>
+                                    <th class="p-3 font-semibold">Telefono</th>
+                                    <th class="p-3 font-semibold text-right">Azione</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-fornitore-body" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. FORNITORE_PRODOTTO -->
+            <div id="tab-content-fornitore_prodotto" class="tab-content hidden space-y-6">
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        Nuova Associazione: FORNITORE_PRODOTTO (N:M)
+                    </h3>
+                    <form onsubmit="insertFornitoreProdotto(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 items-end">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">ID_Fornitore_Prodotto <span class="pk-badge">PK Auto</span></label>
+                            <input type="text" id="fornitore_prodotto-id-preview" disabled class="w-full bg-slate-200/60 border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-600 font-mono font-bold cursor-not-allowed">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-amber-800 mb-1">Fornitore <span class="fk-badge">FK_Fornitore</span></label>
+                            <select id="fp-fk-fornitore" required class="w-full border border-amber-300 bg-amber-50/30 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-amber-500/20 focus:border-amber-600 outline-none"></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-amber-800 mb-1">Prodotto <span class="fk-badge">FK_Prodotto</span></label>
+                            <select id="fp-fk-prodotto" required class="w-full border border-amber-300 bg-amber-50/30 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-amber-500/20 focus:border-amber-600 outline-none"></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Costo Fornitura (€) *</label>
+                            <input type="number" id="fp-costo" step="0.01" min="0" required placeholder="6.50" class="w-full border border-slate-300 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 outline-none">
+                        </div>
+                        <div>
+                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium py-2 px-3 rounded-lg transition shadow-sm">
+                                Salva Associazione
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div>
+                    <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Tabella: FORNITORE_PRODOTTO</h4>
+                    <div class="overflow-x-auto border border-slate-200 rounded-xl">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead class="bg-slate-100 text-slate-600 border-b border-slate-200">
+                                <tr>
+                                    <th class="p-3 font-semibold"><span class="pk-badge">ID_Fornitore_Prodotto</span></th>
+                                    <th class="p-3 font-semibold"><span class="fk-badge">ID_Fornitore</span></th>
+                                    <th class="p-3 font-semibold"><span class="fk-badge">ID_Prodotto</span></th>
+                                    <th class="p-3 font-semibold">Costo Fornitura (€)</th>
+                                    <th class="p-3 font-semibold text-right">Azione</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-fornitore_prodotto-body" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. CLIENTE -->
+            <div id="tab-content-cliente" class="tab-content hidden space-y-6">
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        Nuovo Inserimento: CLIENTE
+                    </h3>
+                    <form onsubmit="insertCliente(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 items-end">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">ID_Cliente <span class="pk-badge">PK Auto</span></label>
+                            <input type="text" id="cliente-id-preview" disabled class="w-full bg-slate-200/60 border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-600 font-mono font-bold cursor-not-allowed">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Nome *</label>
+                            <input type="text" id="cliente-nome" required placeholder="Es. Mario" class="w-full border border-slate-300 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Cognome *</label>
+                            <input type="text" id="cliente-cognome" required placeholder="Es. Rossi" class="w-full border border-slate-300 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Email *</label>
+                            <input type="email" id="cliente-email" required placeholder="Es. mario.rossi@email.it" class="w-full border border-slate-300 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 outline-none">
+                        </div>
+                        <div>
+                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium py-2 px-3 rounded-lg transition shadow-sm">
+                                Salva Cliente
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div>
+                    <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Tabella: CLIENTE</h4>
+                    <div class="overflow-x-auto border border-slate-200 rounded-xl">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead class="bg-slate-100 text-slate-600 border-b border-slate-200">
+                                <tr>
+                                    <th class="p-3 font-semibold"><span class="pk-badge">ID_Cliente</span></th>
+                                    <th class="p-3 font-semibold">Nome</th>
+                                    <th class="p-3 font-semibold">Cognome</th>
+                                    <th class="p-3 font-semibold">Email</th>
+                                    <th class="p-3 font-semibold text-right">Azione</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-cliente-body" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. ACQUISTO (Scontrino Cliente) -->
+            <div id="tab-content-acquisto" class="tab-content hidden space-y-6">
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        Nuovo Inserimento: ACQUISTO (Scontrino / Transazione Banco con Cliente)
+                    </h3>
+                    <form onsubmit="insertAcquisto(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-end">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">ID_Acquisto <span class="pk-badge">PK Auto</span></label>
+                            <input type="text" id="acquisto-id-preview" disabled class="w-full bg-slate-200/60 border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-600 font-mono font-bold cursor-not-allowed">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-amber-800 mb-1">Cliente / Paziente <span class="fk-badge">FK_Cliente</span></label>
+                            <select id="acquisto-fk-cliente" required class="w-full border border-amber-300 bg-amber-50/30 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-amber-500/20 focus:border-amber-600 outline-none"></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Data Scontrino *</label>
+                            <input type="date" id="acquisto-data" required class="w-full border border-slate-300 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 outline-none">
+                        </div>
+                        <div>
+                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium py-2 px-3 rounded-lg transition shadow-sm">
+                                Crea Scontrino Acquisto
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div>
+                    <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Tabella: ACQUISTO (Vendita al Banco)</h4>
+                    <div class="overflow-x-auto border border-slate-200 rounded-xl">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead class="bg-slate-100 text-slate-600 border-b border-slate-200">
+                                <tr>
+                                    <th class="p-3 font-semibold"><span class="pk-badge">ID_Acquisto</span></th>
+                                    <th class="p-3 font-semibold"><span class="fk-badge">ID_Cliente</span></th>
+                                    <th class="p-3 font-semibold">Data Scontrino</th>
+                                    <th class="p-3 font-semibold">Totale Scontrino (€)</th>
+                                    <th class="p-3 font-semibold text-right">Azione</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-acquisto-body" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. RIGA_ACQUISTO -->
+            <div id="tab-content-riga_acquisto" class="tab-content hidden space-y-6">
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        Nuovo Inserimento: RIGA_ACQUISTO (Articolo nello Scontrino)
+                    </h3>
+                    <form onsubmit="insertRigaAcquisto(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 items-end">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">ID_Riga_Acquisto <span class="pk-badge">PK Auto</span></label>
+                            <input type="text" id="riga_acquisto-id-preview" disabled class="w-full bg-slate-200/60 border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-600 font-mono font-bold cursor-not-allowed">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-amber-800 mb-1">ID Acquisto (Scontrino) <span class="fk-badge">FK_Acquisto</span></label>
+                            <select id="ra-fk-acquisto" required class="w-full border border-amber-300 bg-amber-50/30 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-amber-500/20 focus:border-amber-600 outline-none"></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-amber-800 mb-1">Prodotto Venduto <span class="fk-badge">FK_Prodotto</span></label>
+                            <select id="ra-fk-prodotto" onchange="updateRigaAcquistoPrezzo()" required class="w-full border border-amber-300 bg-amber-50/30 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-amber-500/20 focus:border-amber-600 outline-none"></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Quantità Venduta *</label>
+                            <input type="number" id="ra-quantita" min="1" value="1" required class="w-full border border-slate-300 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Prezzo Applicato (€) *</label>
+                            <input type="number" id="ra-prezzo" step="0.01" min="0" required class="w-full border border-slate-300 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 outline-none">
+                        </div>
+                        <div>
+                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium py-2 px-3 rounded-lg transition shadow-sm">
+                                Aggiungi allo Scontrino
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div>
+                    <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Tabella: RIGA_ACQUISTO</h4>
+                    <div class="overflow-x-auto border border-slate-200 rounded-xl">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead class="bg-slate-100 text-slate-600 border-b border-slate-200">
+                                <tr>
+                                    <th class="p-3 font-semibold"><span class="pk-badge">ID_Riga_Acquisto</span></th>
+                                    <th class="p-3 font-semibold"><span class="fk-badge">ID_Acquisto</span></th>
+                                    <th class="p-3 font-semibold"><span class="fk-badge">ID_Prodotto</span></th>
+                                    <th class="p-3 font-semibold">Quantità</th>
+                                    <th class="p-3 font-semibold">Prezzo Unit. (€)</th>
+                                    <th class="p-3 font-semibold">Subtotale (€)</th>
+                                    <th class="p-3 font-semibold text-right">Azione</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-riga_acquisto-body" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 8. ORDINE (Rifornimento Fornitore) -->
+            <div id="tab-content-ordine" class="tab-content hidden space-y-6">
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        Nuovo Inserimento: ORDINE (Rifornimento inviato al Grossista/Fornitore)
+                    </h3>
+                    <form onsubmit="insertOrdine(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-end">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">ID_Ordine <span class="pk-badge">PK Auto</span></label>
+                            <input type="text" id="ordine-id-preview" disabled class="w-full bg-slate-200/60 border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-600 font-mono font-bold cursor-not-allowed">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-amber-800 mb-1">Fornitore / Grossista <span class="fk-badge">FK_Fornitore</span></label>
+                            <select id="ordine-fk-fornitore" required class="w-full border border-amber-300 bg-amber-50/30 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-amber-500/20 focus:border-amber-600 outline-none"></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Data Ordine *</label>
+                            <input type="date" id="ordine-data" required class="w-full border border-slate-300 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 outline-none">
+                        </div>
+                        <div>
+                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium py-2 px-3 rounded-lg transition shadow-sm">
+                                Genera Ordine Rifornimento
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div>
+                    <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Tabella: ORDINE (Ordini a Grossisti)</h4>
+                    <div class="overflow-x-auto border border-slate-200 rounded-xl">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead class="bg-slate-100 text-slate-600 border-b border-slate-200">
+                                <tr>
+                                    <th class="p-3 font-semibold"><span class="pk-badge">ID_Ordine</span></th>
+                                    <th class="p-3 font-semibold"><span class="fk-badge">ID_Fornitore</span></th>
+                                    <th class="p-3 font-semibold">Data Ordine</th>
+                                    <th class="p-3 font-semibold">Costo Totale Ordine (€)</th>
+                                    <th class="p-3 font-semibold text-right">Azione</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-ordine-body" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 9. RIGA_ORDINE -->
+            <div id="tab-content-riga_ordine" class="tab-content hidden space-y-6">
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        Nuovo Inserimento: RIGA_ORDINE (Farmaco da Riassortire)
+                    </h3>
+                    <form onsubmit="insertRigaOrdine(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 items-end">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">ID_Riga_Ordine <span class="pk-badge">PK Auto</span></label>
+                            <input type="text" id="riga_ordine-id-preview" disabled class="w-full bg-slate-200/60 border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-600 font-mono font-bold cursor-not-allowed">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-amber-800 mb-1">ID Ordine <span class="fk-badge">FK_Ordine</span></label>
+                            <select id="ro-fk-ordine" required class="w-full border border-amber-300 bg-amber-50/30 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-amber-500/20 focus:border-amber-600 outline-none"></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-amber-800 mb-1">Prodotto <span class="fk-badge">FK_Prodotto</span></label>
+                            <select id="ro-fk-prodotto" onchange="updateRigaOrdineCosto()" required class="w-full border border-amber-300 bg-amber-50/30 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-amber-500/20 focus:border-amber-600 outline-none"></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Quantità da Ordinare *</label>
+                            <input type="number" id="ro-quantita" min="1" value="10" required class="w-full border border-slate-300 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Costo Acquisto Unit. (€) *</label>
+                            <input type="number" id="ro-costo" step="0.01" min="0" required class="w-full border border-slate-300 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 outline-none">
+                        </div>
+                        <div>
+                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium py-2 px-3 rounded-lg transition shadow-sm">
+                                Aggiungi all'Ordine
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div>
+                    <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Tabella: RIGA_ORDINE</h4>
+                    <div class="overflow-x-auto border border-slate-200 rounded-xl">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead class="bg-slate-100 text-slate-600 border-b border-slate-200">
+                                <tr>
+                                    <th class="p-3 font-semibold"><span class="pk-badge">ID_Riga_Ordine</span></th>
+                                    <th class="p-3 font-semibold"><span class="fk-badge">ID_Ordine</span></th>
+                                    <th class="p-3 font-semibold"><span class="fk-badge">ID_Prodotto</span></th>
+                                    <th class="p-3 font-semibold">Quantità Ordinata</th>
+                                    <th class="p-3 font-semibold">Costo Unit. (€)</th>
+                                    <th class="p-3 font-semibold">Subtotale Costo (€)</th>
+                                    <th class="p-3 font-semibold text-right">Azione</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-riga_ordine-body" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-slate-200 py-3 mt-auto text-center text-xs text-slate-500">
+        <p>Laboratorio didattico per la modellazione e la gestione delle Basi di Dati Relazionali in Farmacia</p>
+    </footer>
+
+    <!-- SCRIPT LOGICO COMPLETO -->
+    <script>
+        // STRUTTURA DATABASE IN MEMORIA
+        let db = {
+            counters: {
+                categoria: 1,
+                prodotto: 1,
+                fornitore: 1,
+                fornitore_prodotto: 1,
+                cliente: 1,
+                acquisto: 1,
+                riga_acquisto: 1,
+                ordine: 1,
+                riga_ordine: 1
+            },
+            categoria: [],
+            prodotto: [],
+            fornitore: [],
+            fornitore_prodotto: [],
+            cliente: [],
+            acquisto: [],
+            riga_acquisto: [],
+            ordine: [],
+            riga_ordine: []
+        };
+
+        // DATI DI ESEMPIO DIDATTICI CORRETTI CON UN SET RICCO DI RECORD
+        const sampleData = {
+            counters: {
+                categoria: 6,
+                prodotto: 9,
+                fornitore: 5,
+                fornitore_prodotto: 9,
+                cliente: 6,
+                acquisto: 5,
+                riga_acquisto: 9,
+                ordine: 4,
+                riga_ordine: 8
+            },
+            categoria: [
+                { id: 1, nome: "Antidolorifici e Antinfiammatori" },
+                { id: 2, nome: "Integratori e Vitamine" },
+                { id: 3, nome: "Dermocosmesi e Cura Pelle" },
+                { id: 4, nome: "Dispositivi Medici e Medicazione" },
+                { id: 5, nome: "Igiene Orale e Personale" }
+            ],
+            prodotto: [
+                { id: 1, id_categoria: 1, nome: "Tachipirina 1000mg 16 compresse", prezzo: 8.50, giacenza: 65 },
+                { id: 2, id_categoria: 1, nome: "Oky Task 40mg Granulato 20 bustine", prezzo: 9.20, giacenza: 42 },
+                { id: 3, id_categoria: 2, nome: "Multivit B Complex 30 capsule", prezzo: 14.50, giacenza: 28 },
+                { id: 4, id_categoria: 2, nome: "Magnesio Supremo 150g Powder", prezzo: 16.90, giacenza: 19 },
+                { id: 5, id_categoria: 3, nome: "Crema Idratante Viso Sensitive 50ml", prezzo: 22.00, giacenza: 12 },
+                { id: 6, id_categoria: 4, nome: "Termometro Digitale Infrarossi", prezzo: 29.90, giacenza: 8 },
+                { id: 7, id_categoria: 4, nome: "Cerotti Assortiti Ipoallergenici 20pz", prezzo: 4.50, giacenza: 85 },
+                { id: 8, id_categoria: 5, nome: "Dentifricio Protezione Gengive 75ml", prezzo: 4.90, giacenza: 34 }
+            ],
+            fornitore: [
+                { id: 1, nome: "Grossista Farmaceutico Sud S.p.A.", telefono: "080-998877" },
+                { id: 2, nome: "Distribuzione Pharma Italia", telefono: "02-112233" },
+                { id: 3, nome: "Alliance Healthcare Italia", telefono: "06-445566" },
+                { id: 4, nome: "Comifar Distribuzione S.r.l.", telefono: "051-778899" }
+            ],
+            fornitore_prodotto: [
+                { id: 1, id_fornitore: 1, id_prodotto: 1, costo: 5.20 },
+                { id: 2, id_fornitore: 1, id_prodotto: 2, costo: 5.80 },
+                { id: 3, id_fornitore: 2, id_prodotto: 3, costo: 8.90 },
+                { id: 4, id_fornitore: 2, id_prodotto: 4, costo: 10.50 },
+                { id: 5, id_fornitore: 3, id_prodotto: 5, costo: 13.20 },
+                { id: 6, id_fornitore: 3, id_prodotto: 6, costo: 18.00 },
+                { id: 7, id_fornitore: 4, id_prodotto: 7, costo: 2.10 },
+                { id: 8, id_fornitore: 4, id_prodotto: 8, costo: 2.80 }
+            ],
+            cliente: [
+                { id: 1, nome: "Mario", cognome: "Rossi", email: "mario.rossi@email.it" },
+                { id: 2, nome: "Giulia", cognome: "Bianchi", email: "giulia.b@email.it" },
+                { id: 3, nome: "Antonio", cognome: "Esposito", email: "a.esposito@email.it" },
+                { id: 4, nome: "Elena", cognome: "Moretti", email: "elena.moretti@email.it" },
+                { id: 5, nome: "Luca", cognome: "Ferrari", email: "l.ferrari@email.it" }
+            ],
+            acquisto: [
+                { id: 1, id_cliente: 1, data: "2026-10-18" },
+                { id: 2, id_cliente: 2, data: "2026-10-20" },
+                { id: 3, id_cliente: 3, data: "2026-10-21" },
+                { id: 4, id_cliente: 4, data: "2026-10-22" }
+            ],
+            riga_acquisto: [
+                { id: 1, id_acquisto: 1, id_prodotto: 1, quantita: 2, prezzo: 8.50 },
+                { id: 2, id_acquisto: 1, id_prodotto: 2, quantita: 1, prezzo: 9.20 },
+                { id: 3, id_acquisto: 2, id_prodotto: 3, quantita: 1, prezzo: 14.50 },
+                { id: 4, id_acquisto: 2, id_prodotto: 8, quantita: 2, prezzo: 4.90 },
+                { id: 5, id_acquisto: 3, id_prodotto: 5, quantita: 1, prezzo: 22.00 },
+                { id: 6, id_acquisto: 3, id_prodotto: 4, quantita: 1, prezzo: 16.90 },
+                { id: 7, id_acquisto: 4, id_prodotto: 6, quantita: 1, prezzo: 29.90 },
+                { id: 8, id_acquisto: 4, id_prodotto: 7, quantita: 3, prezzo: 4.50 }
+            ],
+            ordine: [
+                { id: 1, id_fornitore: 1, data: "2026-10-10" },
+                { id: 2, id_fornitore: 2, data: "2026-10-12" },
+                { id: 3, id_fornitore: 3, data: "2026-10-15" }
+            ],
+            riga_ordine: [
+                { id: 1, id_ordine: 1, id_prodotto: 1, quantita: 100, costo: 5.20 },
+                { id: 2, id_ordine: 1, id_prodotto: 2, quantita: 50, costo: 5.80 },
+                { id: 3, id_ordine: 2, id_prodotto: 3, quantita: 40, costo: 8.90 },
+                { id: 4, id_ordine: 2, id_prodotto: 4, quantita: 30, costo: 10.50 },
+                { id: 5, id_ordine: 3, id_prodotto: 5, quantita: 20, costo: 13.20 },
+                { id: 6, id_ordine: 3, id_prodotto: 6, quantita: 15, costo: 18.00 },
+                { id: 7, id_ordine: 3, id_prodotto: 7, quantita: 100, costo: 2.10 }
+            ]
+        };
+
+        // INIZIALIZZAZIONE ALL'AVVIO
+        window.onload = function() {
+            loadDB();
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('acquisto-data').value = today;
+            document.getElementById('ordine-data').value = today;
+            switchTab('categoria');
+        };
+
+        // PERSISTENZA LOCALSTORAGE
+        function saveDB() {
+            localStorage.setItem('modello_logico_db_v2', JSON.stringify(db));
+            refreshUI();
+        }
+
+        function loadDB() {
+            const stored = localStorage.getItem('modello_logico_db_v2');
+            if (stored) {
+                try {
+                    db = JSON.parse(stored);
+                } catch(e) {
+                    db = JSON.parse(JSON.stringify(sampleData));
+                }
+            } else {
+                db = JSON.parse(JSON.stringify(sampleData));
+            }
+            refreshUI();
+        }
+
+        function clearAllData() {
+            if (confirm("Attenzione: Vuoi davvero svuotare completamente tutte le tabelle del database?")) {
+                db = {
+                    counters: { categoria: 1, prodotto: 1, fornitore: 1, fornitore_prodotto: 1, cliente: 1, acquisto: 1, riga_acquisto: 1, ordine: 1, riga_ordine: 1 },
+                    categoria: [], prodotto: [], fornitore: [], fornitore_prodotto: [], cliente: [], acquisto: [], riga_acquisto: [], ordine: [], riga_ordine: []
+                };
+                saveDB();
+                showNotification("Database Svuotato", "Tutti i record sono stati azzerati correttamente.", "info");
+            }
+        }
+
+        function resetToSampleData() {
+            db = JSON.parse(JSON.stringify(sampleData));
+            saveDB();
+            showNotification("Dati Ripristinati", "Database ripristinato con la struttura e i dati di esempio corretti.", "info");
+        }
+
+        // AGGIORNAMENTO DINAMICO INTERFACCIA E SELECT (FK)
+        function refreshUI() {
+            // Aggiorna ID preview PK
+            document.getElementById('categoria-id-preview').value = db.counters.categoria;
+            document.getElementById('prodotto-id-preview').value = db.counters.prodotto;
+            document.getElementById('fornitore-id-preview').value = db.counters.fornitore;
+            document.getElementById('fornitore_prodotto-id-preview').value = db.counters.fornitore_prodotto;
+            document.getElementById('cliente-id-preview').value = db.counters.cliente;
+            document.getElementById('acquisto-id-preview').value = db.counters.acquisto;
+            document.getElementById('riga_acquisto-id-preview').value = db.counters.riga_acquisto;
+            document.getElementById('ordine-id-preview').value = db.counters.ordine;
+            document.getElementById('riga_ordine-id-preview').value = db.counters.riga_ordine;
+
+            // Aggiorna Contatori Badge
+            document.getElementById('badge-count-categoria').innerText = db.categoria.length;
+            document.getElementById('badge-count-prodotto').innerText = db.prodotto.length;
+            document.getElementById('badge-count-fornitore').innerText = db.fornitore.length;
+            document.getElementById('badge-count-fornitore_prodotto').innerText = db.fornitore_prodotto.length;
+            document.getElementById('badge-count-cliente').innerText = db.cliente.length;
+            document.getElementById('badge-count-acquisto').innerText = db.acquisto.length;
+            document.getElementById('badge-count-riga_acquisto').innerText = db.riga_acquisto.length;
+            document.getElementById('badge-count-ordine').innerText = db.ordine.length;
+            document.getElementById('badge-count-riga_ordine').innerText = db.riga_ordine.length;
+
+            // Popola Select Foreign Keys
+            populateSelects();
+
+            // Renderizza Tabelle
+            renderTables();
+        }
+
+        function populateSelects() {
+            // 1. FK Categoria in Prodotto
+            const catSelect = document.getElementById('prodotto-fk-categoria');
+            catSelect.innerHTML = db.categoria.length === 0
+                ? '<option value="">-- Nessuna Categoria (Crea prima una Categoria) --</option>'
+                : db.categoria.map(c => `<option value="${c.id}">[ID ${c.id}] ${c.nome}</option>`).join('');
+
+            // 2. FK Fornitore in Fornitore_Prodotto e Ordine
+            const fornitoreSelects = ['fp-fk-fornitore', 'ordine-fk-fornitore'];
+            fornitoreSelects.forEach(id => {
+                const el = document.getElementById(id);
+                el.innerHTML = db.fornitore.length === 0
+                    ? '<option value="">-- Nessun Fornitore disponibile --</option>'
+                    : db.fornitore.map(f => `<option value="${f.id}">[ID ${f.id}] ${f.nome}</option>`).join('');
+            });
+
+            // 3. FK Prodotto in Fornitore_Prodotto, Riga_Acquisto, Riga_Ordine
+            const prodottoSelects = ['fp-fk-prodotto', 'ra-fk-prodotto', 'ro-fk-prodotto'];
+            prodottoSelects.forEach(id => {
+                const el = document.getElementById(id);
+                el.innerHTML = db.prodotto.length === 0
+                    ? '<option value="">-- Nessun Prodotto disponibile --</option>'
+                    : db.prodotto.map(p => `<option value="${p.id}">[ID ${p.id}] ${p.nome} (€ ${parseFloat(p.prezzo).toFixed(2)} - Giac: ${p.giacenza})</option>`).join('');
+            });
+
+            // 4. FK Cliente in Acquisto (Scontrino Banco)
+            const clienteSelect = document.getElementById('acquisto-fk-cliente');
+            clienteSelect.innerHTML = db.cliente.length === 0
+                ? '<option value="">-- Nessun Cliente disponibile --</option>'
+                : db.cliente.map(c => `<option value="${c.id}">[ID ${c.id}] ${c.cognome} ${c.nome}</option>`).join('');
+
+            // 5. FK Acquisto in Riga_Acquisto
+            const acquistoSelect = document.getElementById('ra-fk-acquisto');
+            acquistoSelect.innerHTML = db.acquisto.length === 0
+                ? '<option value="">-- Nessun Acquisto/Scontrino registrato --</option>'
+                : db.acquisto.map(a => {
+                    const cli = db.cliente.find(c => c.id == a.id_cliente);
+                    const cliNome = cli ? `${cli.cognome} ${cli.nome}` : 'N.D.';
+                    return `<option value="${a.id}">[Scontrino #${a.id}] Cliente: ${cliNome} (${a.data})</option>`;
+                }).join('');
+
+            // 6. FK Ordine in Riga_Ordine
+            const ordineSelect = document.getElementById('ro-fk-ordine');
+            ordineSelect.innerHTML = db.ordine.length === 0
+                ? '<option value="">-- Nessun Ordine registrato --</option>'
+                : db.ordine.map(o => {
+                    const forn = db.fornitore.find(f => f.id == o.id_fornitore);
+                    const fornNome = forn ? forn.nome : 'N.D.';
+                    return `<option value="${o.id}">[Ordine Rifornimento #${o.id}] Fornitore: ${fornNome} (${o.data})</option>`;
+                }).join('');
+
+            updateRigaAcquistoPrezzo();
+            updateRigaOrdineCosto();
+        }
+
+        function updateRigaAcquistoPrezzo() {
+            const prodId = document.getElementById('ra-fk-prodotto').value;
+            if (prodId) {
+                const p = db.prodotto.find(x => x.id == prodId);
+                if (p) document.getElementById('ra-prezzo').value = parseFloat(p.prezzo).toFixed(2);
+            } else {
+                document.getElementById('ra-prezzo').value = '';
+            }
+        }
+
+        function updateRigaOrdineCosto() {
+            const prodId = document.getElementById('ro-fk-prodotto').value;
+            const ordId = document.getElementById('ro-fk-ordine').value;
+            if (prodId && ordId) {
+                const ord = db.ordine.find(o => o.id == ordId);
+                if (ord) {
+                    const fp = db.fornitore_prodotto.find(x => x.id_fornitore == ord.id_fornitore && x.id_prodotto == prodId);
+                    if (fp) {
+                        document.getElementById('ro-costo').value = parseFloat(fp.costo).toFixed(2);
+                        return;
+                    }
+                }
+            }
+            if (prodId) {
+                const fp = db.fornitore_prodotto.find(x => x.id_prodotto == prodId);
+                if (fp) {
+                    document.getElementById('ro-costo').value = parseFloat(fp.costo).toFixed(2);
+                } else {
+                    document.getElementById('ro-costo').value = "5.00";
+                }
+            } else {
+                document.getElementById('ro-costo').value = '';
+            }
+        }
+
+        // SWITCH TAB BROWSER
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+            document.getElementById(`tab-content-${tabName}`).classList.remove('hidden');
+            document.getElementById(`tab-btn-${tabName}`).classList.add('active');
+        }
+
+        // ========================================================
+        // INSERIMENTO DATI (DML - INSERT)
+        // ========================================================
+
+        function insertCategoria(e) {
+            e.preventDefault();
+            const nome = document.getElementById('categoria-nome').value.trim();
+            const newObj = { id: db.counters.categoria++, nome };
+            db.categoria.push(newObj);
+            document.getElementById('categoria-nome').value = '';
+            saveDB();
+            showNotification("Categoria Salvata", `Categoria "${nome}" creata con ID ${newObj.id}.`, "success");
+        }
+
+        function insertProdotto(e) {
+            e.preventDefault();
+            const id_categoria = parseInt(document.getElementById('prodotto-fk-categoria').value);
+            const nome = document.getElementById('prodotto-nome').value.trim();
+            const prezzo = parseFloat(document.getElementById('prodotto-prezzo').value);
+            const giacenza = parseInt(document.getElementById('prodotto-giacenza').value) || 0;
+
+            if (!id_categoria) {
+                showNotification("Integrità Violata", "Seleziona prima una Categoria esistente!", "error");
+                return;
+            }
+
+            const newObj = { id: db.counters.prodotto++, id_categoria, nome, prezzo, giacenza };
+            db.prodotto.push(newObj);
+            document.getElementById('prodotto-nome').value = '';
+            document.getElementById('prodotto-prezzo').value = '';
+            document.getElementById('prodotto-giacenza').value = '50';
+            saveDB();
+            showNotification("Prodotto Salvato", `Prodotto "${nome}" salvato a catalogo con giacenza ${giacenza}.`, "success");
+        }
+
+        function insertFornitore(e) {
+            e.preventDefault();
+            const nome = document.getElementById('fornitore-nome').value.trim();
+            const telefono = document.getElementById('fornitore-telefono').value.trim();
+
+            const newObj = { id: db.counters.fornitore++, nome, telefono };
+            db.fornitore.push(newObj);
+            document.getElementById('fornitore-nome').value = '';
+            document.getElementById('fornitore-telefono').value = '';
+            saveDB();
+            showNotification("Fornitore Salvato", `Fornitore "${nome}" salvato con ID ${newObj.id}.`, "success");
+        }
+
+        function insertFornitoreProdotto(e) {
+            e.preventDefault();
+            const id_fornitore = parseInt(document.getElementById('fp-fk-fornitore').value);
+            const id_prodotto = parseInt(document.getElementById('fp-fk-prodotto').value);
+            const costo = parseFloat(document.getElementById('fp-costo').value);
+
+            if (!id_fornitore || !id_prodotto) {
+                showNotification("Integrità Violata", "Seleziona sia un Fornitore che un Prodotto per registrare il prezzo concordato.", "error");
+                return;
+            }
+
+            const newObj = { id: db.counters.fornitore_prodotto++, id_fornitore, id_prodotto, costo };
+            db.fornitore_prodotto.push(newObj);
+            document.getElementById('fp-costo').value = '';
+            saveDB();
+            showNotification("Listino Concordato Salvato", "Prezzo di acquisto concordato salvato in Fornitore_Prodotto.", "success");
+        }
+
+        function insertCliente(e) {
+            e.preventDefault();
+            const nome = document.getElementById('cliente-nome').value.trim();
+            const cognome = document.getElementById('cliente-cognome').value.trim();
+            const email = document.getElementById('cliente-email').value.trim();
+
+            const newObj = { id: db.counters.cliente++, nome, cognome, email };
+            db.cliente.push(newObj);
+            document.getElementById('cliente-nome').value = '';
+            document.getElementById('cliente-cognome').value = '';
+            document.getElementById('cliente-email').value = '';
+            saveDB();
+            showNotification("Cliente Salvato", `Cliente/Paziente "${cognome} ${nome}" aggiunto.`, "success");
+        }
+
+        function insertAcquisto(e) {
+            e.preventDefault();
+            const id_cliente = parseInt(document.getElementById('acquisto-fk-cliente').value);
+            const data = document.getElementById('acquisto-data').value;
+
+            if (!id_cliente) {
+                showNotification("Integrità Violata", "Seleziona un Cliente valido per emettere uno Scontrino/Acquisto.", "error");
+                return;
+            }
+
+            const newObj = { id: db.counters.acquisto++, id_cliente, data };
+            db.acquisto.push(newObj);
+            saveDB();
+            showNotification("Scontrino Creato", `Acquisto cliente #${newObj.id} generato. Aggiungi ora i prodotti in 'Riga Acquisto'.`, "success");
+        }
+
+        function insertRigaAcquisto(e) {
+            e.preventDefault();
+            const id_acquisto = parseInt(document.getElementById('ra-fk-acquisto').value);
+            const id_prodotto = parseInt(document.getElementById('ra-fk-prodotto').value);
+            const quantita = parseInt(document.getElementById('ra-quantita').value);
+            const prezzo = parseFloat(document.getElementById('ra-prezzo').value);
+
+            if (!id_acquisto || !id_prodotto) {
+                showNotification("Integrità Violata", "Seleziona un Acquisto ed un Prodotto validi.", "error");
+                return;
+            }
+
+            // Aggiorna giacenza magazzino (decrementa)
+            const prod = db.prodotto.find(p => p.id === id_prodotto);
+            if (prod) {
+                prod.giacenza = Math.max(0, prod.giacenza - quantita);
+            }
+
+            const newObj = { id: db.counters.riga_acquisto++, id_acquisto, id_prodotto, quantita, prezzo };
+            db.riga_acquisto.push(newObj);
+            saveDB();
+            showNotification("Riga Acquisto Aggiunta", `Voce aggiunta allo scontrino #${id_acquisto}. Giacenza magazzino aggiornata.`, "success");
+        }
+
+        function insertOrdine(e) {
+            e.preventDefault();
+            const id_fornitore = parseInt(document.getElementById('ordine-fk-fornitore').value);
+            const data = document.getElementById('ordine-data').value;
+
+            if (!id_fornitore) {
+                showNotification("Integrità Violata", "Seleziona un Fornitore/Grossista valido per inviare un Ordine.", "error");
+                return;
+            }
+
+            const newObj = { id: db.counters.ordine++, id_fornitore, data };
+            db.ordine.push(newObj);
+            saveDB();
+            showNotification("Ordine Generato", `Ordine a grossista #${newObj.id} inserito. Aggiungi i prodotti in 'Riga Ordine'.`, "success");
+        }
+
+        function insertRigaOrdine(e) {
+            e.preventDefault();
+            const id_ordine = parseInt(document.getElementById('ro-fk-ordine').value);
+            const id_prodotto = parseInt(document.getElementById('ro-fk-prodotto').value);
+            const quantita = parseInt(document.getElementById('ro-quantita').value);
+            const costo = parseFloat(document.getElementById('ro-costo').value);
+
+            if (!id_ordine || !id_prodotto) {
+                showNotification("Integrità Violata", "Seleziona un Ordine ed un Prodotto validi.", "error");
+                return;
+            }
+
+            const newObj = { id: db.counters.riga_ordine++, id_ordine, id_prodotto, quantita, costo };
+            db.riga_ordine.push(newObj);
+            saveDB();
+            showNotification("Riga Ordine Aggiunta", `Voce inserita nell'Ordine di riassortimento #${id_ordine}.`, "success");
+        }
+
+        // ========================================================
+        // GESTIONE INTEGRITÀ REFERENZIALE E CANCELLAZIONI (DELETE)
+        // ========================================================
+
+        function deleteCategoria(id) {
+            const prodottiCollegati = db.prodotto.filter(p => p.id_categoria === id);
+            if (prodottiCollegati.length > 0) {
+                showNotification(
+                    "CANCELLAZIONE BLOCCATA (Integrità Referenziale)",
+                    `Impossibile eliminare la Categoria ID ${id} perché vi appartengono ${prodottiCollegati.length} prodotto/i.\nPer eliminare questa categoria occorre prima rimuovere o riassegnare tali prodotti per evitare dati orfani.`,
+                    "error"
+                );
+                return;
+            }
+            if (confirm(`Confermi l'eliminazione della Categoria ID ${id}?`)) {
+                db.categoria = db.categoria.filter(c => c.id !== id);
+                saveDB();
+                showNotification("Categoria Eliminata", `Categoria ID ${id} eliminata senza violare l'integrità referenziale.`, "success");
+            }
+        }
+
+        function deleteProdotto(id) {
+            const fpCollegati = db.fornitore_prodotto.filter(fp => fp.id_prodotto === id);
+            const raCollegate = db.riga_acquisto.filter(ra => ra.id_prodotto === id);
+            const roCollegate = db.riga_ordine.filter(ro => ro.id_prodotto === id);
+
+            if (fpCollegati.length > 0 || raCollegate.length > 0 || roCollegate.length > 0) {
+                showNotification(
+                    "CANCELLAZIONE BLOCCATA (Integrità Referenziale)",
+                    `Impossibile eliminare il Prodotto ID ${id}. Risulta associato a:\n- ${fpCollegati.length} prezzi di listino in Fornitore_Prodotto\n- ${raCollegate.length} righe di acquisto/scontrino cliente\n- ${roCollegate.length} righe di ordine a grossisti.`,
+                    "error"
+                );
+                return;
+            }
+            if (confirm(`Confermi l'eliminazione del Prodotto ID ${id}?`)) {
+                db.prodotto = db.prodotto.filter(p => p.id !== id);
+                saveDB();
+                showNotification("Prodotto Eliminato", `Prodotto ID ${id} eliminato con successo.`, "success");
+            }
+        }
+
+        function deleteFornitore(id) {
+            const fpCollegati = db.fornitore_prodotto.filter(fp => fp.id_fornitore === id);
+            const ordiCollegati = db.ordine.filter(o => o.id_fornitore === id);
+
+            if (fpCollegati.length > 0 || ordiCollegati.length > 0) {
+                showNotification(
+                    "CANCELLAZIONE BLOCCATA (Integrità Referenziale)",
+                    `Impossibile eliminare il Grossista/Fornitore ID ${id}. È collegato a:\n- ${fpCollegati.length} listini concordati in Fornitore_Prodotto\n- ${ordiCollegati.length} Ordini di riassortimento inviati.`,
+                    "error"
+                );
+                return;
+            }
+            if (confirm(`Confermi l'eliminazione del Fornitore ID ${id}?`)) {
+                db.fornitore = db.fornitore.filter(f => f.id !== id);
+                saveDB();
+                showNotification("Fornitore Eliminato", `Fornitore ID ${id} rimosso con successo.`, "success");
+            }
+        }
+
+        function deleteFornitoreProdotto(id) {
+            if (confirm(`Eliminare la convenzione Fornitore-Prodotto ID ${id}?`)) {
+                db.fornitore_prodotto = db.fornitore_prodotto.filter(fp => fp.id !== id);
+                saveDB();
+                showNotification("Associazione Rimossa", `Listino concordato ID ${id} eliminato.`, "info");
+            }
+        }
+
+        function deleteCliente(id) {
+            const acquistiCollegati = db.acquisto.filter(a => a.id_cliente === id);
+            if (acquistiCollegati.length > 0) {
+                showNotification(
+                    "CANCELLAZIONE BLOCCATA (Integrità Referenziale)",
+                    `Impossibile eliminare il Cliente ID ${id} poiché ha effettuato ${acquistiCollegati.length} Acquisto/i al banco.\nDevi prima gestire o eliminare gli scontrini del cliente.`,
+                    "error"
+                );
+                return;
+            }
+            if (confirm(`Confermi l'eliminazione del Cliente ID ${id}?`)) {
+                db.cliente = db.cliente.filter(c => c.id !== id);
+                saveDB();
+                showNotification("Cliente Eliminato", `Cliente ID ${id} eliminato.`, "success");
+            }
+        }
+
+        function deleteAcquisto(id) {
+            const righeA = db.riga_acquisto.filter(ra => ra.id_acquisto === id);
+            let confirmMsg = `Confermi l'eliminazione dell'Acquisto/Scontrino ID ${id}?`;
+            if (righeA.length > 0) {
+                confirmMsg += `\n\nAZIÓNE IN CASCATA: Verranno automaticamente eliminate anche le sue ${righeA.length} righe di dettaglio acquisto.`;
+            }
+
+            if (confirm(confirmMsg)) {
+                db.riga_acquisto = db.riga_acquisto.filter(ra => ra.id_acquisto !== id);
+                db.acquisto = db.acquisto.filter(a => a.id !== id);
+                saveDB();
+                showNotification("Cancellazione in Cascata Applicata", `Scontrino cliente #${id} e ${righeA.length} voci di dettaglio rimossi.`, "warning");
+            }
+        }
+
+        function deleteRigaAcquisto(id) {
+            if (confirm(`Eliminare la riga di acquisto ID ${id}?`)) {
+                db.riga_acquisto = db.riga_acquisto.filter(ra => ra.id !== id);
+                saveDB();
+                showNotification("Riga Acquisto Rimossa", `Voce dello scontrino ID ${id} eliminata.`, "info");
+            }
+        }
+
+        function deleteOrdine(id) {
+            const righeO = db.riga_ordine.filter(ro => ro.id_ordine === id);
+            let confirmMsg = `Confermi l'eliminazione dell'Ordine a Grossista ID ${id}?`;
+            if (righeO.length > 0) {
+                confirmMsg += `\n\nAZIÓNE IN CASCATA: Verranno eliminate anche le sue ${righeO.length} righe di dettaglio ordine.`;
+            }
+
+            if (confirm(confirmMsg)) {
+                db.riga_ordine = db.riga_ordine.filter(ro => ro.id_ordine !== id);
+                db.ordine = db.ordine.filter(o => o.id !== id);
+                saveDB();
+                showNotification("Cancellazione in Cascata Applicata", `Ordine #${id} e ${righeO.length} voci di dettaglio rimossi.`, "warning");
+            }
+        }
+
+        function deleteRigaOrdine(id) {
+            if (confirm(`Eliminare la riga d'ordine ID ${id}?`)) {
+                db.riga_ordine = db.riga_ordine.filter(ro => ro.id !== id);
+                saveDB();
+                showNotification("Riga Ordine Rimossa", `Riga Ordine ID ${id} eliminata.`, "info");
+            }
+        }
+
+        // ========================================================
+        // RENDERING DELLE TABELLE NELL'INTERFACCIA UTENTE
+        // ========================================================
+
+        function renderTables() {
+            // 1. CATEGORIA
+            document.getElementById('table-categoria-body').innerHTML = db.categoria.length === 0
+                ? `<tr><td colspan="3" class="p-4 text-center text-slate-400 italic">Nessuna categoria inserita</td></tr>`
+                : db.categoria.map(c => `
+                    <tr class="hover:bg-slate-50 border-b border-slate-100">
+                        <td class="p-3 font-mono font-bold text-slate-700">${c.id}</td>
+                        <td class="p-3 font-medium text-slate-800">${escapeHtml(c.nome)}</td>
+                        <td class="p-3 text-right">
+                            <button onclick="deleteCategoria(${c.id})" class="text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 px-2.5 py-1 rounded text-xs transition">Elimina</button>
+                        </td>
+                    </tr>
+                `).join('');
+
+            // 2. PRODOTTO
+            document.getElementById('table-prodotto-body').innerHTML = db.prodotto.length === 0
+                ? `<tr><td colspan="6" class="p-4 text-center text-slate-400 italic">Nessun prodotto inserito</td></tr>`
+                : db.prodotto.map(p => {
+                    const cat = db.categoria.find(c => c.id === p.id_categoria);
+                    return `
+                        <tr class="hover:bg-slate-50 border-b border-slate-100">
+                            <td class="p-3 font-mono font-bold text-slate-700">${p.id}</td>
+                            <td class="p-3"><span class="font-semibold text-amber-900">[FK ${p.id_categoria}]</span> ${cat ? escapeHtml(cat.nome) : '<span class="text-red-500">Orfano</span>'}</td>
+                            <td class="p-3 font-medium text-slate-800">${escapeHtml(p.nome)}</td>
+                            <td class="p-3 font-mono text-slate-700">€ ${parseFloat(p.prezzo).toFixed(2)}</td>
+                            <td class="p-3 font-mono font-bold text-slate-800">${p.giacenza !== undefined ? p.giacenza : 'N.D.'} pz</td>
+                            <td class="p-3 text-right">
+                                <button onclick="deleteProdotto(${p.id})" class="text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 px-2.5 py-1 rounded text-xs transition">Elimina</button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+            // 3. FORNITORE
+            document.getElementById('table-fornitore-body').innerHTML = db.fornitore.length === 0
+                ? `<tr><td colspan="4" class="p-4 text-center text-slate-400 italic">Nessun fornitore inserito</td></tr>`
+                : db.fornitore.map(f => `
+                    <tr class="hover:bg-slate-50 border-b border-slate-100">
+                        <td class="p-3 font-mono font-bold text-slate-700">${f.id}</td>
+                        <td class="p-3 font-medium text-slate-800">${escapeHtml(f.nome)}</td>
+                        <td class="p-3 text-slate-600">${escapeHtml(f.telefono)}</td>
+                        <td class="p-3 text-right">
+                            <button onclick="deleteFornitore(${f.id})" class="text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 px-2.5 py-1 rounded text-xs transition">Elimina</button>
+                        </td>
+                    </tr>
+                `).join('');
+
+            // 4. FORNITORE_PRODOTTO
+            document.getElementById('table-fornitore_prodotto-body').innerHTML = db.fornitore_prodotto.length === 0
+                ? `<tr><td colspan="5" class="p-4 text-center text-slate-400 italic">Nessun listino concordato inserito</td></tr>`
+                : db.fornitore_prodotto.map(fp => {
+                    const forn = db.fornitore.find(f => f.id === fp.id_fornitore);
+                    const prod = db.prodotto.find(p => p.id === fp.id_prodotto);
+                    return `
+                        <tr class="hover:bg-slate-50 border-b border-slate-100">
+                            <td class="p-3 font-mono font-bold text-slate-700">${fp.id}</td>
+                            <td class="p-3"><span class="font-semibold text-amber-900">[FK ${fp.id_fornitore}]</span> ${forn ? escapeHtml(forn.nome) : '<span class="text-red-500">Orfano</span>'}</td>
+                            <td class="p-3"><span class="font-semibold text-amber-900">[FK ${fp.id_prodotto}]</span> ${prod ? escapeHtml(prod.nome) : '<span class="text-red-500">Orfano</span>'}</td>
+                            <td class="p-3 font-mono text-slate-700">€ ${parseFloat(fp.costo).toFixed(2)}</td>
+                            <td class="p-3 text-right">
+                                <button onclick="deleteFornitoreProdotto(${fp.id})" class="text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 px-2.5 py-1 rounded text-xs transition">Elimina</button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+            // 5. CLIENTE
+            document.getElementById('table-cliente-body').innerHTML = db.cliente.length === 0
+                ? `<tr><td colspan="5" class="p-4 text-center text-slate-400 italic">Nessun cliente inserito</td></tr>`
+                : db.cliente.map(c => `
+                    <tr class="hover:bg-slate-50 border-b border-slate-100">
+                        <td class="p-3 font-mono font-bold text-slate-700">${c.id}</td>
+                        <td class="p-3 font-medium text-slate-800">${escapeHtml(c.nome)}</td>
+                        <td class="p-3 font-medium text-slate-800">${escapeHtml(c.cognome)}</td>
+                        <td class="p-3 text-slate-600">${escapeHtml(c.email)}</td>
+                        <td class="p-3 text-right">
+                            <button onclick="deleteCliente(${c.id})" class="text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 px-2.5 py-1 rounded text-xs transition">Elimina</button>
+                        </td>
+                    </tr>
+                `).join('');
+
+            // 6. ACQUISTO (Scontrino Cliente)
+            document.getElementById('table-acquisto-body').innerHTML = db.acquisto.length === 0
+                ? `<tr><td colspan="5" class="p-4 text-center text-slate-400 italic">Nessuna vendita/scontrino inserito</td></tr>`
+                : db.acquisto.map(a => {
+                    const cli = db.cliente.find(c => c.id === a.id_cliente);
+                    const righe = db.riga_acquisto.filter(ra => ra.id_acquisto === a.id);
+                    const totale = righe.reduce((acc, r) => acc + (r.quantita * r.prezzo), 0);
+                    return `
+                        <tr class="hover:bg-slate-50 border-b border-slate-100">
+                            <td class="p-3 font-mono font-bold text-slate-700">#${a.id}</td>
+                            <td class="p-3"><span class="font-semibold text-amber-900">[FK ${a.id_cliente}]</span> ${cli ? escapeHtml(cli.cognome + ' ' + cli.nome) : '<span class="text-red-500">Orfano</span>'}</td>
+                            <td class="p-3 text-slate-600">${a.data}</td>
+                            <td class="p-3 font-mono font-bold text-emerald-700">€ ${totale.toFixed(2)}</td>
+                            <td class="p-3 text-right">
+                                <button onclick="deleteAcquisto(${a.id})" class="text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 px-2.5 py-1 rounded text-xs transition">Elimina Acquisto</button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+            // 7. RIGA_ACQUISTO
+            document.getElementById('table-riga_acquisto-body').innerHTML = db.riga_acquisto.length === 0
+                ? `<tr><td colspan="7" class="p-4 text-center text-slate-400 italic">Nessuna riga scontrino inserita</td></tr>`
+                : db.riga_acquisto.map(ra => {
+                    const prod = db.prodotto.find(p => p.id === ra.id_prodotto);
+                    const subtot = ra.quantita * ra.prezzo;
+                    return `
+                        <tr class="hover:bg-slate-50 border-b border-slate-100">
+                            <td class="p-3 font-mono font-bold text-slate-700">${ra.id}</td>
+                            <td class="p-3 font-semibold text-amber-900">[FK Scontrino #${ra.id_acquisto}]</td>
+                            <td class="p-3"><span class="font-semibold text-amber-900">[FK Prodotto ${ra.id_prodotto}]</span> ${prod ? escapeHtml(prod.nome) : '<span class="text-red-500">Orfano</span>'}</td>
+                            <td class="p-3 text-slate-700">${ra.quantita}</td>
+                            <td class="p-3 font-mono text-slate-700">€ ${parseFloat(ra.prezzo).toFixed(2)}</td>
+                            <td class="p-3 font-mono font-bold text-slate-800">€ ${subtot.toFixed(2)}</td>
+                            <td class="p-3 text-right">
+                                <button onclick="deleteRigaAcquisto(${ra.id})" class="text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 px-2.5 py-1 rounded text-xs transition">Elimina</button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+            // 8. ORDINE (Rifornimento Fornitore)
+            document.getElementById('table-ordine-body').innerHTML = db.ordine.length === 0
+                ? `<tr><td colspan="5" class="p-4 text-center text-slate-400 italic">Nessun ordine a grossista inserito</td></tr>`
+                : db.ordine.map(o => {
+                    const forn = db.fornitore.find(f => f.id === o.id_fornitore);
+                    const righe = db.riga_ordine.filter(ro => ro.id_ordine === o.id);
+                    const totale = righe.reduce((acc, r) => acc + (r.quantita * (r.costo || r.prezzo || 0)), 0);
+                    return `
+                        <tr class="hover:bg-slate-50 border-b border-slate-100">
+                            <td class="p-3 font-mono font-bold text-slate-700">#${o.id}</td>
+                            <td class="p-3"><span class="font-semibold text-amber-900">[FK ${o.id_fornitore}]</span> ${forn ? escapeHtml(forn.nome) : '<span class="text-red-500">Orfano</span>'}</td>
+                            <td class="p-3 text-slate-600">${o.data}</td>
+                            <td class="p-3 font-mono font-bold text-blue-700">€ ${totale.toFixed(2)}</td>
+                            <td class="p-3 text-right">
+                                <button onclick="deleteOrdine(${o.id})" class="text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 px-2.5 py-1 rounded text-xs transition">Elimina Ordine</button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+            // 9. RIGA_ORDINE
+            document.getElementById('table-riga_ordine-body').innerHTML = db.riga_ordine.length === 0
+                ? `<tr><td colspan="7" class="p-4 text-center text-slate-400 italic">Nessun dettaglio d'ordine inserito</td></tr>`
+                : db.riga_ordine.map(ro => {
+                    const prod = db.prodotto.find(p => p.id === ro.id_prodotto);
+                    const costoUnit = ro.costo !== undefined ? ro.costo : ro.prezzo;
+                    const subtot = ro.quantita * costoUnit;
+                    return `
+                        <tr class="hover:bg-slate-50 border-b border-slate-100">
+                            <td class="p-3 font-mono font-bold text-slate-700">${ro.id}</td>
+                            <td class="p-3 font-semibold text-amber-900">[FK Ordine #${ro.id_ordine}]</td>
+                            <td class="p-3"><span class="font-semibold text-amber-900">[FK Prodotto ${ro.id_prodotto}]</span> ${prod ? escapeHtml(prod.nome) : '<span class="text-red-500">Orfano</span>'}</td>
+                            <td class="p-3 text-slate-700">${ro.quantita}</td>
+                            <td class="p-3 font-mono text-slate-700">€ ${parseFloat(costoUnit).toFixed(2)}</td>
+                            <td class="p-3 font-mono font-bold text-slate-800">€ ${subtot.toFixed(2)}</td>
+                            <td class="p-3 text-right">
+                                <button onclick="deleteRigaOrdine(${ro.id})" class="text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 px-2.5 py-1 rounded text-xs transition">Elimina</button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+        }
+
+        // SISTEMA NOTIFICHE FEEDBACK DIDATTICO
+        function showNotification(title, message, type = "info") {
+            const box = document.getElementById('notification-box');
+            const titleEl = document.getElementById('notification-title');
+            const msgEl = document.getElementById('notification-message');
+            const iconEl = document.getElementById('notification-icon');
+
+            box.className = "p-4 rounded-xl border transition-all duration-300 flex items-start justify-between shadow-sm ";
+
+            if (type === "success") {
+                box.classList.add("bg-emerald-50", "border-emerald-200", "text-emerald-900");
+                iconEl.innerHTML = `<svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>`;
+            } else if (type === "error") {
+                box.classList.add("bg-red-50", "border-red-200", "text-red-900");
+                iconEl.innerHTML = `<svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`;
+            } else if (type === "warning") {
+                box.classList.add("bg-amber-50", "border-amber-200", "text-amber-900");
+                iconEl.innerHTML = `<svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>`;
+            } else {
+                box.classList.add("bg-blue-50", "border-blue-200", "text-blue-900");
+                iconEl.innerHTML = `<svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`;
+            }
+
+            titleEl.innerText = title;
+            msgEl.innerText = message;
+            box.classList.remove('hidden');
+
+            if (type === "success" || type === "info") {
+                setTimeout(() => {
+                    closeNotification();
+                }, 7000);
+            }
+        }
+
+        function closeNotification() {
+            document.getElementById('notification-box').classList.add('hidden');
+        }
+
+        // SANITIZZAZIONE XSS INPUT
+        function escapeHtml(text) {
+            if (!text) return '';
+            return String(text)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>
