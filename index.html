@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generatore di Prompt per la Scuola - Formula R-C-O-V-O (250 Casi)</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .tab-active { border-bottom: 3px solid #4f46e5; color: #4f46e5; font-weight: 600; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    .lang-btn-active { background-color: #4f46e5 !important; color: #ffffff !important; font-weight: 700; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+    .subcat-btn-active { background-color: #312e81 !important; color: #ffffff !important; border-color: #4338ca !important; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-indigo-900 text-white shadow-lg sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="flex items-center space-x-3">
+        <div class="p-2.5 bg-indigo-700/80 rounded-xl shadow-inner border border-indigo-500/30">
+          <i class="fa-solid fa-wand-magic-sparkles text-2xl text-amber-300"></i>
+        </div>
+        <div>
+          <h1 id="txt-header-title" class="text-xl md:text-2xl font-bold tracking-tight">Generatore di Prompt per la Scuola</h1>
+          <p id="txt-header-subtitle" class="text-indigo-200 text-xs md:text-sm">Formula R-C-O-V-O • 250 Casi Studio Istituzionali</p>
+        </div>
+      </div>
+      
+      <!-- Language & Badge -->
+      <div class="flex items-center gap-3">
+        <div class="hidden lg:flex items-center space-x-2 bg-indigo-800/80 px-3.5 py-1.5 rounded-lg border border-indigo-700/50 text-xs text-indigo-100">
+          <i class="fa-solid fa-graduation-cap text-amber-400"></i>
+          <span id="txt-header-badge">Piattaforma per Docenti, DS, DSGA, Personale ATA e Tecnici</span>
+        </div>
+
+        <!-- Language Switcher Widget -->
+        <div class="flex items-center bg-indigo-950/80 p-1 rounded-xl border border-indigo-700/60 shadow-inner">
+          <button id="btn-lang-it" onclick="setLanguage('it')" class="lang-btn-active px-3 py-1 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 text-indigo-200 hover:text-white">
+            <span>🇮🇹</span> <span>IT</span>
+          </button>
+          <button id="btn-lang-en" onclick="setLanguage('en')" class="px-3 py-1 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 text-indigo-200 hover:text-white">
+            <span>🇬🇧</span> <span>EN</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <div class="bg-white border-b border-slate-200 sticky top-[73px] z-30 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-4 sm:space-x-8 overflow-x-auto">
+      <button onclick="switchTab('builder')" id="tab-builder" class="py-3.5 px-2 tab-active text-slate-600 hover:text-indigo-600 transition font-medium flex items-center gap-2 text-sm whitespace-nowrap">
+        <i class="fa-solid fa-sliders text-indigo-600"></i> <span id="txt-tab-builder">Creatore di Prompt</span>
+      </button>
+      <button onclick="switchTab('library')" id="tab-library" class="py-3.5 px-2 text-slate-500 hover:text-indigo-600 transition font-medium flex items-center gap-2 text-sm whitespace-nowrap">
+        <i class="fa-solid fa-book-bookmark text-indigo-500"></i> <span id="txt-tab-library">Libreria Esempi (250)</span>
+      </button>
+      <button onclick="switchTab('guide')" id="tab-guide" class="py-3.5 px-2 text-slate-500 hover:text-indigo-600 transition font-medium flex items-center gap-2 text-sm whitespace-nowrap">
+        <i class="fa-solid fa-circle-info text-sky-500"></i> <span id="txt-tab-guide">Come funziona il Metodo</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+
+    <!-- TAB 1: PROMPT BUILDER -->
+    <div id="content-builder" class="space-y-8">
+      
+      <!-- Formula Banner -->
+      <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-4 flex flex-wrap items-center justify-between gap-3 text-sm">
+        <span class="font-semibold text-indigo-900 flex items-center gap-2">
+          <i class="fa-solid fa-key text-amber-500"></i> <span id="txt-formula-title">Formula R-C-O-V-O per Prompt Scolastici:</span>
+        </span>
+        <div class="flex flex-wrap items-center gap-1.5 font-mono text-xs font-semibold">
+          <span id="badge-r" class="px-2.5 py-1 bg-blue-600 text-white rounded shadow-sm">1. RUOLO</span>
+          <span class="text-slate-400">+</span>
+          <span id="badge-c" class="px-2.5 py-1 bg-emerald-600 text-white rounded shadow-sm">2. CONTESTO</span>
+          <span class="text-slate-400">+</span>
+          <span id="badge-o1" class="px-2.5 py-1 bg-amber-600 text-white rounded shadow-sm">3. OBIETTIVO</span>
+          <span class="text-slate-400">+</span>
+          <span id="badge-v" class="px-2.5 py-1 bg-rose-600 text-white rounded shadow-sm">4. VINCOLI</span>
+          <span class="text-slate-400">+</span>
+          <span id="badge-o2" class="px-2.5 py-1 bg-purple-600 text-white rounded shadow-sm">5. OUTPUT</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Form Inputs (7 Cols) -->
+        <div class="lg:col-span-7 space-y-6">
+
+          <!-- Presets Quick Choice -->
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-3">
+            <label id="lbl-quick-select" class="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+              <i class="fa-solid fa-bolt text-amber-500"></i> Selezione Rapida Profilo
+            </label>
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+              <button onclick="applyRolePreset('docente')" class="role-btn p-2.5 text-xs border rounded-lg hover:border-indigo-500 hover:bg-indigo-50/50 transition text-center flex flex-col items-center justify-center gap-1.5 text-slate-700 bg-slate-50 font-medium">
+                <i class="fa-solid fa-chalkboard-user text-indigo-600 text-lg"></i>
+                <span id="role-btn-docente">Docente</span>
+              </button>
+              <button onclick="applyRolePreset('ds')" class="role-btn p-2.5 text-xs border rounded-lg hover:border-indigo-500 hover:bg-indigo-50/50 transition text-center flex flex-col items-center justify-center gap-1.5 text-slate-700 bg-slate-50 font-medium">
+                <i class="fa-solid fa-user-tie text-blue-600 text-lg"></i>
+                <span id="role-btn-ds">Dirigente (DS)</span>
+              </button>
+              <button onclick="applyRolePreset('dsga')" class="role-btn p-2.5 text-xs border rounded-lg hover:border-indigo-500 hover:bg-indigo-50/50 transition text-center flex flex-col items-center justify-center gap-1.5 text-slate-700 bg-slate-50 font-medium">
+                <i class="fa-solid fa-file-invoice-dollar text-emerald-600 text-lg"></i>
+                <span id="role-btn-dsga">DSGA</span>
+              </button>
+              <button onclick="applyRolePreset('amministrativo')" class="role-btn p-2.5 text-xs border rounded-lg hover:border-indigo-500 hover:bg-indigo-50/50 transition text-center flex flex-col items-center justify-center gap-1.5 text-slate-700 bg-slate-50 font-medium">
+                <i class="fa-solid fa-folder-open text-amber-600 text-lg"></i>
+                <span id="role-btn-amministrativo">Amministrativo</span>
+              </button>
+              <button onclick="applyRolePreset('tecnico')" class="role-btn p-2.5 text-xs border rounded-lg hover:border-indigo-500 hover:bg-indigo-50/50 transition text-center flex flex-col items-center justify-center gap-1.5 text-slate-700 bg-slate-50 font-medium">
+                <i class="fa-solid fa-flask text-purple-600 text-lg"></i>
+                <span id="role-btn-tecnico">Tecnico Lab.</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 1. RUOLO -->
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-2.5">
+            <label class="font-bold text-slate-800 flex items-center justify-between">
+              <span class="flex items-center gap-2 text-sm sm:text-base">
+                <span class="w-6 h-6 rounded-full bg-blue-600 text-white text-xs flex items-center font-mono justify-center">R</span>
+                <span id="lbl-r-title">RUOLO</span>
+              </span>
+              <span id="lbl-r-sub" class="text-xs font-normal text-slate-500">Chi deve essere l'IA?</span>
+            </label>
+            <textarea id="input-ruolo" oninput="updatePrompt()" rows="2" class="w-full p-3 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" placeholder="Es: Sei un docente esperto di pedagogia inclusiva e progettazione per competenze nella scuola secondaria..."></textarea>
+          </div>
+
+          <!-- 2. CONTESTO -->
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-2.5">
+            <label class="font-bold text-slate-800 flex items-center justify-between">
+              <span class="flex items-center gap-2 text-sm sm:text-base">
+                <span class="w-6 h-6 rounded-full bg-emerald-600 text-white text-xs flex items-center font-mono justify-center">C</span>
+                <span id="lbl-c-title">CONTESTO</span>
+              </span>
+              <span id="lbl-c-sub" class="text-xs font-normal text-slate-500">Qual è la situazione specifica?</span>
+            </label>
+            <textarea id="input-contesto" oninput="updatePrompt()" rows="3" class="w-full p-3 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition" placeholder="Es: Classe terza di scuola secondaria di I grado con 22 alunni, di cui 2 con BES non certificati e 1 con DSA. La materia è Storia..."></textarea>
+          </div>
+
+          <!-- 3. OBIETTIVO -->
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-2.5">
+            <label class="font-bold text-slate-800 flex items-center justify-between">
+              <span class="flex items-center gap-2 text-sm sm:text-base">
+                <span class="w-6 h-6 rounded-full bg-amber-600 text-white text-xs flex items-center font-mono justify-center">O</span>
+                <span id="lbl-o1-title">OBIETTIVO</span>
+              </span>
+              <span id="lbl-o1-sub" class="text-xs font-normal text-slate-500">Cosa deve fare esattamente l'IA?</span>
+            </label>
+            <textarea id="input-obiettivo" oninput="updatePrompt()" rows="3" class="w-full p-3 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition" placeholder="Es: Progetta un'Unità Didattica di Apprendimento (UDA) di 6 ore sulla Rivoluzione Industriale orientata all'apprendimento cooperativo..."></textarea>
+          </div>
+
+          <!-- 4. VINCOLI -->
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-2.5">
+            <label class="font-bold text-slate-800 flex items-center justify-between">
+              <span class="flex items-center gap-2 text-sm sm:text-base">
+                <span class="w-6 h-6 rounded-full bg-rose-600 text-white text-xs flex items-center font-mono justify-center">V</span>
+                <span id="lbl-v-title">VINCOLI E LIMITI</span>
+              </span>
+              <span id="lbl-v-sub" class="text-xs font-normal text-slate-500">Come deve farlo? Cosa evitare?</span>
+            </label>
+            <textarea id="input-vincoli" oninput="updatePrompt()" rows="3" class="w-full p-3 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-rose-500 focus:border-rose-500 outline-none transition" placeholder="Es: Mantieni un tono chiaro e inclusivo. Evita linguaggio troppo accademico. Rispetta la normativa vigente. Includi tempi precisi per ciascuna fase..."></textarea>
+          </div>
+
+          <!-- 5. OUTPUT -->
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-2.5">
+            <label class="font-bold text-slate-800 flex items-center justify-between">
+              <span class="flex items-center gap-2 text-sm sm:text-base">
+                <span class="w-6 h-6 rounded-full bg-purple-600 text-white text-xs flex items-center font-mono justify-center">O</span>
+                <span id="lbl-o2-title">OUTPUT FORMATO</span>
+              </span>
+              <span id="lbl-o2-sub" class="text-xs font-normal text-slate-500">In quale formato deve rispondere?</span>
+            </label>
+            <textarea id="input-output" oninput="updatePrompt()" rows="2" class="w-full p-3 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition" placeholder="Es: Presenta la risposta sotto forma di tabella Markdown suddivisa in: Fasi, Attività, Tempi, Strumenti e Criteri di Valutazione."></textarea>
+          </div>
+
+          <div class="flex gap-3">
+            <button onclick="resetForm()" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-600 text-sm hover:bg-slate-100 transition flex items-center gap-1.5 font-medium">
+              <i class="fa-solid fa-rotate-left"></i> <span id="btn-reset-text">Cancella Tutto</span>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Live Preview Output (5 Cols) -->
+        <div class="lg:col-span-5">
+          <div class="bg-slate-900 text-slate-100 p-5 rounded-xl shadow-xl sticky top-36 space-y-4 border border-slate-800">
+            
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div class="flex items-center space-x-2">
+                <span class="flex h-3 w-3 relative">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                </span>
+                <h3 id="txt-preview-header" class="font-bold text-white text-sm uppercase tracking-wider">Prompt Risultante</h3>
+              </div>
+              <button onclick="copyGeneratedPrompt()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 shadow-sm active:scale-95">
+                <i class="fa-regular fa-copy"></i>
+                <span id="copy-btn-text">Copia Prompt</span>
+              </button>
+            </div>
+
+            <!-- Assembled Prompt Box -->
+            <div id="output-prompt" class="bg-slate-950 p-4 rounded-lg font-mono text-xs leading-relaxed text-slate-300 whitespace-pre-wrap border border-slate-800/80 min-h-[360px] max-h-[520px] overflow-y-auto select-all">
+              <!-- Dynamically Generated -->
+            </div>
+
+            <!-- Quick Action Hints -->
+            <div class="p-3 bg-slate-800/60 rounded-lg text-xs text-slate-300 space-y-1 border border-slate-700/50">
+              <p class="font-semibold text-amber-300 flex items-center gap-1">
+                <i class="fa-solid fa-lightbulb"></i> <span id="txt-hint-title">Istruzione di utilizzo:</span>
+              </p>
+              <p id="txt-hint-body" class="text-slate-400">Copia questo prompt strutturato ed incollalo in ChatGPT, Gemini o Claude per ottenere risposte precise e contestualizzate per la scuola.</p>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- TAB 2: LIBRARY (250 CASES) -->
+    <div id="content-library" class="hidden space-y-6">
+      
+      <!-- Library Control Bar -->
+      <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+        
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <h2 id="txt-library-title" class="text-xl font-bold text-slate-900 flex items-center gap-2">
+              <i class="fa-solid fa-book-open text-indigo-600"></i> Libreria Esempi Pronti (250 Casi Studio)
+            </h2>
+            <p id="txt-library-subtitle" class="text-slate-500 text-xs sm:text-sm mt-0.5">250 modelli pronti suddivisi in 50 casi per ogni ruolo scolastico (Docente, DS, DSGA, Amministrativo, Tecnico di Laboratorio).</p>
+          </div>
+
+          <!-- Search Input -->
+          <div class="w-full md:w-80 relative">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+            <input type="text" id="library-search" oninput="filterLibrary()" placeholder="Cerca prompt, argomenti, norme..." class="w-full pl-9 pr-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
+          </div>
+        </div>
+
+        <!-- Role Filters -->
+        <div class="flex flex-wrap items-center gap-2 border-t border-slate-100 pt-3">
+          <span id="lbl-filter-roles" class="text-xs font-semibold text-slate-500 uppercase tracking-wider mr-2">Ruoli:</span>
+          <button onclick="setRoleFilter('all', this)" id="filter-role-all" class="role-filter-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-indigo-600 text-white transition">Tutti (250)</button>
+          <button onclick="setRoleFilter('docente', this)" id="filter-role-docente" class="role-filter-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition">Docente (50)</button>
+          <button onclick="setRoleFilter('ds', this)" id="filter-role-ds" class="role-filter-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition">Dirigente DS (50)</button>
+          <button onclick="setRoleFilter('dsga', this)" id="filter-role-dsga" class="role-filter-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition">DSGA (50)</button>
+          <button onclick="setRoleFilter('amministrativo', this)" id="filter-role-amministrativo" class="role-filter-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition">Amministrativo (50)</button>
+          <button onclick="setRoleFilter('tecnico', this)" id="filter-role-tecnico" class="role-filter-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition">Tecnico Lab. (50)</button>
+        </div>
+
+        <!-- Dynamic Subcategory Filters Container -->
+        <div id="subcat-filter-container" class="flex flex-wrap items-center gap-1.5 border-t border-slate-100 pt-3 text-xs">
+          <!-- Populated dynamically via JS -->
+        </div>
+
+        <!-- Result counter bar -->
+        <div class="text-xs text-slate-500 font-medium flex justify-between items-center pt-1 border-t border-slate-50">
+          <span id="results-count">Mostrati 250 di 250 prompt</span>
+          <span class="text-indigo-600 font-semibold cursor-pointer hover:underline" onclick="resetLibraryFilters()"><i class="fa-solid fa-rotate mr-1"></i><span id="btn-reset-filters">Azzera filtri</span></span>
+        </div>
+
+      </div>
+
+      <!-- Library Grid -->
+      <div id="library-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Preset Cards Generated via JavaScript -->
+      </div>
+
+    </div>
+
+    <!-- TAB 3: GUIDE -->
+    <div id="content-guide" class="hidden space-y-8 max-w-4xl mx-auto">
+      
+      <div class="bg-white p-6 sm:p-8 rounded-xl border border-slate-200 shadow-sm space-y-6">
+        
+        <div class="border-b border-slate-200 pb-4">
+          <h2 id="txt-guide-title" class="text-2xl font-bold text-slate-900 flex items-center gap-2">
+            <i class="fa-solid fa-graduation-cap text-indigo-600"></i> Guida alla Formula R-C-O-V-O per la Scuola
+          </h2>
+          <p id="txt-guide-subtitle" class="text-slate-600 mt-1 text-sm">
+            Perché i prompt generici producono risposte vaghe e come la formula R-C-O-V-O garantisce risultati professionali, normativamente precisi e subito applicabili.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 gap-5">
+          
+          <div class="flex gap-4 p-4 rounded-xl bg-blue-50/70 border border-blue-200">
+            <div class="w-10 h-10 rounded-xl bg-blue-600 text-white font-bold flex items-center justify-center shrink-0 shadow-sm">R</div>
+            <div class="space-y-1">
+              <h3 id="txt-guide-r-head" class="font-bold text-blue-950 text-base">1. RUOLO (Chi deve essere l'IA?)</h3>
+              <p id="txt-guide-r-desc" class="text-xs sm:text-sm text-blue-900">Assegna un'identità professionale precisa all'IA. Specifica competenze ed esperienza istituzionale.</p>
+              <div id="txt-guide-r-ex" class="font-mono text-xs bg-blue-100/70 text-blue-950 p-2 rounded border border-blue-200/50">
+                Esempio: "Sei un DSGA esperto di contabilità pubblica scolastica e applicazione del D.I. 129/2018..."
+              </div>
+            </div>
+          </div>
+
+          <div class="flex gap-4 p-4 rounded-xl bg-emerald-50/70 border border-emerald-200">
+            <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white font-bold flex items-center justify-center shrink-0 shadow-sm">C</div>
+            <div class="space-y-1">
+              <h3 id="txt-guide-c-head" class="font-bold text-emerald-950 text-base">2. CONTESTO (Qual è la situazione?)</h3>
+              <p id="txt-guide-c-desc" class="text-xs sm:text-sm text-emerald-900">Descrivi l'ambiente scolastico, l'ordine/grado della scuola, il profilo della classe o il quadro burocratico.</p>
+              <div id="txt-guide-c-ex" class="font-mono text-xs bg-emerald-100/70 text-emerald-950 p-2 rounded border border-emerald-200/50">
+                Esempio: "Scuola Secondaria di I Grado, classe 2ª con 21 alunni, inclusi 2 studenti con DSA ed 1 con disabilità motoria..."
+              </div>
+            </div>
+          </div>
+
+          <div class="flex gap-4 p-4 rounded-xl bg-amber-50/70 border border-amber-200">
+            <div class="w-10 h-10 rounded-xl bg-amber-600 text-white font-bold flex items-center justify-center shrink-0 shadow-sm">O</div>
+            <div class="space-y-1">
+              <h3 id="txt-guide-o1-head" class="font-bold text-amber-950 text-base">3. OBIETTIVO (Cosa deve fare?)</h3>
+              <p id="txt-guide-o1-desc" class="text-xs sm:text-sm text-amber-900">Dichiara esattamente l'azione principale richiesta: creare una lezione, stilare una circolare, redigere un decreto o una relazione.</p>
+              <div id="txt-guide-o1-ex" class="font-mono text-xs bg-amber-100/70 text-amber-950 p-2 rounded border border-amber-200/50">
+                Esempio: "Elabora una determina a contrarre per l'affidamento diretto di materiale didattico digitale tramite MEPA..."
+              </div>
+            </div>
+          </div>
+
+          <div class="flex gap-4 p-4 rounded-xl bg-rose-50/70 border border-rose-200">
+            <div class="w-10 h-10 rounded-xl bg-rose-600 text-white font-bold flex items-center justify-center shrink-0 shadow-sm">V</div>
+            <div class="space-y-1">
+              <h3 id="txt-guide-v-head" class="font-bold text-rose-950 text-base">4. VINCOLI E LIMITI (Come deve farlo?)</h3>
+              <p id="txt-guide-v-desc" class="text-xs sm:text-sm text-rose-900">Inserisci regole formali, riferimenti di legge, requisiti d'inclusività o limiti di lunghezza e stile.</p>
+              <div id="txt-guide-v-ex" class="font-mono text-xs bg-rose-100/70 text-rose-950 p-2 rounded border border-rose-200/50">
+                Esempio: "Riferimento normativo D.Lgs. 36/2023. Usa un linguaggio formale, evita terminologia generica e specifica il CIG..."
+              </div>
+            </div>
+          </div>
+
+          <div class="flex gap-4 p-4 rounded-xl bg-purple-50/70 border border-purple-200">
+            <div class="w-10 h-10 rounded-xl bg-purple-600 text-white font-bold flex items-center justify-center shrink-0 shadow-sm">O</div>
+            <div class="space-y-1">
+              <h3 id="txt-guide-o2-head" class="font-bold text-purple-950 text-base">5. OUTPUT FORMATO (In quale formato rispondere?)</h3>
+              <p id="txt-guide-o2-desc" class="text-xs sm:text-sm text-purple-900">Dettaglia l'aspetto grafico e la struttura finale: tabella Markdown, elenco numerato, sezioni con titoli o schema di lettera.</p>
+              <div id="txt-guide-o2-ex" class="font-mono text-xs bg-purple-100/70 text-purple-950 p-2 rounded border border-purple-200/50">
+                Esempio: "Rispondi sotto forma di documento ufficiale suddiviso in: Premessa, Visti, Considerato e Dispositivo Finale."
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 border border-slate-700 transform translate-y-20 opacity-0 transition-all duration-300 z-50">
+    <i class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+    <span id="toast-message" class="text-xs font-medium">Prompt copiato negli appunti!</span>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 text-slate-400 py-6 border-t border-slate-800 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 text-center text-xs space-y-1.5">
+      <p id="txt-footer-copy" class="font-semibold text-slate-200">
+        Francesco Picca @ 2026 • Generatore di Prompt per la Scuola (Formula R-C-O-V-O)
+      </p>
+      <p id="txt-footer-desc" class="text-slate-500">
+        Libreria Completa di 250 Casi Studio per Didattica, Dirigenza Scolastica, DSGA, Servizi Amministrativi e Laboratori.
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    // State Variables
+    let currentLang = 'it';
+    let currentTab = 'builder';
+    let activeRoleFilter = 'all';
+    let activeSubCatFilter = 'all';
+
+    // Translations Dictionary for UI elements
+    const i18n = {
+      it: {
+        headerTitle: "Generatore di Prompt per la Scuola",
+        headerSubtitle: "Formula R-C-O-V-O • 250 Casi Studio Istituzionali",
+        headerBadge: "Piattaforma per Docenti, DS, DSGA, Amministrativi e Tecnici",
+        tabBuilder: "Creatore di Prompt",
+        tabLibrary: "Libreria Esempi (250)",
+        tabGuide: "Come funziona il Metodo",
+        formulaTitle: "Formula R-C-O-V-O per Prompt Scolastici:",
+        badgeR: "1. RUOLO",
+        badgeC: "2. CONTESTO",
+        badgeO1: "3. OBIETTIVO",
+        badgeV: "4. VINCOLI",
+        badgeO2: "5. OUTPUT",
+        quickSelectLabel: "Selezione Rapida Profilo",
+        roleDocente: "Docente",
+        roleDs: "Dirigente (DS)",
+        roleDsga: "DSGA",
+        roleAdmin: "Amministrativo",
+        roleTecnico: "Tecnico Lab.",
+        rTitle: "RUOLO",
+        rSub: "Chi deve essere l'IA?",
+        rPlaceholder: "Es: Sei un docente esperto di pedagogia inclusiva e progettazione per competenze nella scuola secondaria...",
+        cTitle: "CONTESTO",
+        cSub: "Qual è la situazione specifica?",
+        cPlaceholder: "Es: Classe terza di scuola secondaria di I grado con 22 alunni, di cui 2 con BES non certificati e 1 con DSA. La materia è Storia...",
+        o1Title: "OBIETTIVO",
+        o1Sub: "Cosa deve fare esattamente l'IA?",
+        o1Placeholder: "Es: Progetta un'Unità Didattica di Apprendimento (UDA) di 6 ore sulla Rivoluzione Industriale orientata all'apprendimento cooperativo...",
+        vTitle: "VINCOLI E LIMITI",
+        vSub: "Come deve farlo? Cosa evitare?",
+        vPlaceholder: "Es: Mantieni un tono chiaro e inclusivo. Evita linguaggio troppo accademico. Rispetta la normativa vigente. Includi tempi precisi per ciascuna fase...",
+        o2Title: "OUTPUT FORMATO",
+        o2Sub: "In quale formato deve rispondere?",
+        o2Placeholder: "Es: Presenta la risposta sotto forma di tabella Markdown suddivisa in: Fasi, Attività, Tempi, Strumenti e Criteri di Valutazione.",
+        btnReset: "Cancella Tutto",
+        previewHeader: "Prompt Risultante",
+        copyBtnText: "Copia Prompt",
+        hintTitle: "Istruzione di utilizzo:",
+        hintBody: "Copia questo prompt strutturato ed incollalo in ChatGPT, Gemini o Claude per ottenere risposte precise e contestualizzate per la scuola.",
+        libraryTitle: "Libreria Esempi Pronti (250 Casi Studio)",
+        librarySubtitle: "250 modelli pronti suddivisi in 50 casi per ogni ruolo scolastico (Docente, DS, DSGA, Amministrativo, Tecnico di Laboratorio).",
+        searchPlaceholder: "Cerca prompt, argomenti, norme...",
+        filterRolesLabel: "Ruoli:",
+        roleAll: "Tutti (250)",
+        roleDocenteFilter: "Docente (50)",
+        roleDsFilter: "Dirigente DS (50)",
+        roleDsgaFilter: "DSGA (50)",
+        roleAdminFilter: "Amministrativo (50)",
+        roleTecnicoFilter: "Tecnico Lab. (50)",
+        resetFilters: "Azzera filtri",
+        resultsCount: (shown, total) => `Mostrati ${shown} di ${total} prompt`,
+        subcatAll: "Tutte le sottocategorie",
+        useTemplate: "Usa questo Prompt",
+        copyTemplate: "Copia Prompt",
+        toastCopied: "Prompt copiato negli appunti!",
+        toastLoaded: "Prompt caricato nel Creatore!",
+        guideTitle: "Guida alla Formula R-C-O-V-O per la Scuola",
+        guideSubtitle: "Perché i prompt generici producono risposte vaghe e come la formula R-C-O-V-O garantisce risultati professionali, normativamente precisi e subito applicabili.",
+        guideRHead: "1. RUOLO (Chi deve essere l'IA?)",
+        guideRDesc: "Assegna un'identità professionale precisa all'IA. Specifica competenze ed esperienza istituzionale.",
+        guideREx: "Esempio: \"Sei un DSGA esperto di contabilità pubblica scolastica e applicazione del D.I. 129/2018...\"",
+        guideCHead: "2. CONTESTO (Qual è la situazione?)",
+        guideCDesc: "Descrivi l'ambiente scolastico, l'ordine/grado della scuola, il profilo della classe o il quadro burocratico.",
+        guideCEx: "Esempio: \"Scuola Secondaria di I Grado, classe 2ª con 21 alunni, inclusi 2 studenti con DSA ed 1 con disabilità motoria...\"",
+        guideO1Head: "3. OBIETTIVO (Cosa deve fare?)",
+        guideO1Desc: "Dichiara esattamente l'azione principale richiesta: creare una lezione, stilare una circolare, redigere un decreto o una relazione.",
+        guideO1Ex: "Esempio: \"Elabora una determina a contrarre per l'affidamento diretto di materiale didattico digitale tramite MEPA...\"",
+        guideVHead: "4. VINCOLI E LIMITI (Come deve farlo?)",
+        guideVDesc: "Inserisci regole formali, riferimenti di legge, requisiti d'inclusività o limiti di lunghezza e stile.",
+        guideVEx: "Esempio: \"Riferimento normativo D.Lgs. 36/2023. Usa un linguaggio formale, evita terminologia generica e specifica il CIG...\"",
+        guideO2Head: "5. OUTPUT FORMATO (In quale formato rispondere?)",
+        guideO2Desc: "Dettaglia l'aspetto grafico e la struttura finale: tabella Markdown, elenco numerato, sezioni con titoli o schema di lettera.",
+        guideO2Ex: "Esempio: \"Rispondi sotto forma di documento ufficiale suddiviso in: Premessa, Visti, Considerato e Dispositivo Finale.\"",
+        footerCopy: "Francesco Picca @ 2026 • Generatore di Prompt per la Scuola (Formula R-C-O-V-O)",
+        footerDesc: "Libreria Completa di 250 Casi Studio per Didattica, Dirigenza Scolastica, DSGA, Servizi Amministrativi e Laboratori.",
+        promptPrefixR: "RUOLO:",
+        promptPrefixC: "CONTESTO:",
+        promptPrefixO1: "OBIETTIVO:",
+        promptPrefixV: "VINCOLI E LIMITI:",
+        promptPrefixO2: "FORMATO OUTPUT:"
+      },
+      en: {
+        headerTitle: "School Prompt Generator",
+        headerSubtitle: "R-C-O-V-O Formula • 250 Institutional Case Studies",
+        headerBadge: "Platform for Teachers, Principals, Admin Directors, Staff & Lab Techs",
+        tabBuilder: "Prompt Builder",
+        tabLibrary: "Examples Library (250)",
+        tabGuide: "How Method Works",
+        formulaTitle: "R-C-O-V-O Formula for School Prompts:",
+        badgeR: "1. ROLE",
+        badgeC: "2. CONTEXT",
+        badgeO1: "3. OBJECTIVE",
+        badgeV: "4. CONSTRAINTS",
+        badgeO2: "5. OUTPUT",
+        quickSelectLabel: "Quick Role Selection",
+        roleDocente: "Teacher",
+        roleDs: "Principal",
+        roleDsga: "Admin Director",
+        roleAdmin: "Admin Staff",
+        roleTecnico: "Lab Tech",
+        rTitle: "ROLE",
+        rSub: "Who should the AI act as?",
+        rPlaceholder: "E.g.: You are an expert secondary school teacher in inclusive pedagogy and competency-based curriculum design...",
+        cTitle: "CONTEXT",
+        cSub: "What is the specific situation?",
+        cPlaceholder: "E.g.: 8th-grade middle school class with 22 students, including 2 with uncertified special needs and 1 with dyslexia. Subject: History...",
+        o1Title: "OBJECTIVE",
+        o1Sub: "What exactly should the AI do?",
+        o1Placeholder: "E.g.: Design a 6-hour Learning Unit on the Industrial Revolution focused on cooperative learning...",
+        vTitle: "CONSTRAINTS & LIMITS",
+        vSub: "How should it do it? What to avoid?",
+        vPlaceholder: "E.g.: Maintain a clear and inclusive tone. Avoid overly academic jargon. Comply with regulations. Include specific timing for each phase...",
+        o2Title: "OUTPUT FORMAT",
+        o2Sub: "In what format should it respond?",
+        o2Placeholder: "E.g.: Present the response as a Markdown table structured into: Phases, Activities, Timing, Tools, and Assessment Criteria.",
+        btnReset: "Clear All",
+        previewHeader: "Generated Prompt",
+        copyBtnText: "Copy Prompt",
+        hintTitle: "How to use:",
+        hintBody: "Copy this structured prompt and paste it into ChatGPT, Gemini, or Claude to get precise, context-aware answers tailored for school.",
+        libraryTitle: "Ready Examples Library (250 Case Studies)",
+        librarySubtitle: "250 ready-to-use templates divided into 50 cases for each school role (Teacher, Principal, Admin Director, Admin Staff, Lab Technician).",
+        searchPlaceholder: "Search prompts, topics, rules...",
+        filterRolesLabel: "Roles:",
+        roleAll: "All (250)",
+        roleDocenteFilter: "Teacher (50)",
+        roleDsFilter: "Principal (50)",
+        roleDsgaFilter: "Admin Director (50)",
+        roleAdminFilter: "Admin Staff (50)",
+        roleTecnicoFilter: "Lab Tech (50)",
+        resetFilters: "Reset filters",
+        resultsCount: (shown, total) => `Showing ${shown} of ${total} prompts`,
+        subcatAll: "All subcategories",
+        useTemplate: "Use this Prompt",
+        copyTemplate: "Copy Prompt",
+        toastCopied: "Prompt copied to clipboard!",
+        toastLoaded: "Prompt loaded into Builder!",
+        guideTitle: "Guide to the R-C-O-V-O Formula for Schools",
+        guideSubtitle: "Why generic prompts produce vague answers and how the R-C-O-V-O formula ensures professional, legally accurate, and immediately applicable results.",
+        guideRHead: "1. ROLE (Who should the AI be?)",
+        guideRDesc: "Assign a precise professional identity to the AI. Specify skills and institutional expertise.",
+        guideREx: "Example: \"You are a School Admin Director expert in public school accounting and financial decrees...\"",
+        guideCHead: "2. CONTEXT (What is the situation?)",
+        guideCDesc: "Describe the school environment, grade level, class profile, or administrative framework.",
+        guideCEx: "Example: \"Middle school, 7th grade with 21 students, including 2 students with learning disabilities...\"",
+        guideO1Head: "3. OBJECTIVE (What must it do?)",
+        guideO1Desc: "State the main required action: create a lesson plan, draft a circular, write a decree or report.",
+        guideO1Ex: "Example: \"Draft a procurement decree for direct purchasing of digital learning tools...\"",
+        guideVHead: "4. CONSTRAINTS & LIMITS (How must it do it?)",
+        guideVDesc: "Set formal guidelines, legal citations, inclusion requirements, or length/style constraints.",
+        guideVEx: "Example: \"Public Procurement Code references. Use formal language, avoid generic phrasing, specify CIG code...\"",
+        guideO2Head: "5. OUTPUT FORMAT (What response format?)",
+        guideO2Desc: "Detail the layout and structure: Markdown table, numbered list, titled sections, or letter template.",
+        guideO2Ex: "Example: \"Respond as an official document divided into: Preamble, Directives, Considerations, and Final Order.\"",
+        footerCopy: "Francesco Picca @ 2026 • School Prompt Generator (R-C-O-V-O Formula)",
+        footerDesc: "Complete Library of 250 Case Studies for Teaching, School Leadership, Admin Management, Staff Services and Laboratories.",
+        promptPrefixR: "ROLE:",
+        promptPrefixC: "CONTEXT:",
+        promptPrefixO1: "OBJECTIVE:",
+        promptPrefixV: "CONSTRAINTS & LIMITS:",
+        promptPrefixO2: "OUTPUT FORMAT:"
+      }
+    };
+
+    // Subcategory Translation Map
+    const subCatTranslations = {
+      en: {
+        "Progettazione & UDA": "Lesson Planning & Learning Units",
+        "Valutazione & Rubriche": "Assessment & Rubrics",
+        "Inclusione & BES/DSA": "Inclusion & Special Needs (SEN)",
+        "Metodologie Innovative & STEM": "Innovative Methods & STEM",
+        "Comunicazione & Tutorato": "Communication & Tutoring",
+        "Circolari & Disposizioni": "Circulars & Directives",
+        "Atto di Indirizzo & PTOF": "Strategic Directives & School Plan",
+        "Gestione Emergenze & Sicurezza": "Emergency & Safety Management",
+        "Relazioni Sindacali & Organi": "Union Relations & Governing Bodies",
+        "Innovazione & PNRR": "Innovation & PNRR Grants",
+        "Programma Annuale & Contabilità": "Annual Budget & Accounting",
+        "Gare & Acquisti (PNRR/MEPA)": "Procurement & MEPA Purchasing",
+        "Gestione Personale ATA": "Administrative Staff Management",
+        "Inventario & Patrimonio": "Asset Inventory & Management",
+        "Adempimenti Fiscali & Audit": "Tax Compliance & Audit",
+        "Protocollo & Archiviazione": "Document Filing & Archiving",
+        "Carriera & Ricostruzioni": "Seniority Reconstruction",
+        "Didattica & Iscrizioni": "Student Records & Enrollment",
+        "Contratti & Supplenze": "Contracts & Staffing",
+        "Certificazioni & Modulistica": "Certifications & Forms",
+        "Preparazione Esperienze & Reagenti": "Lab Prep & Reagents",
+        "Sicurezza & DPI": "Lab Safety & PPE",
+        "Manutenzione & Inventario": "Lab Maintenance & Inventory",
+        "Assistenza Didattica & Inclusione": "Lab Teaching Support & Inclusion",
+        "Gestione Hardware & Software": "IT Hardware & Software",
+        "HACCP & Laboratori Enogastronomici": "HACCP & Culinary Labs"
+      }
+    };
+
+    // Role Translation Map
+    const roleTranslations = {
+      docente: { it: "Docente", en: "Teacher" },
+      ds: { it: "Dirigente (DS)", en: "Principal" },
+      dsga: { it: "DSGA", en: "Admin Director" },
+      amministrativo: { it: "Amministrativo", en: "Admin Staff" },
+      tecnico: { it: "Tecnico di Laboratorio", en: "Lab Technician" }
+    };
+
+    // Engine to generate all 250 scenarios (50 Docente, 50 DS, 50 DSGA, 50 Amministrativo, 50 Tecnico)
+    function buildComplete250Presets() {
+      const presets = [];
+
+      // 1. DOCENTE (50 ITEMS)
+      const docSubCats = [
+        "Progettazione & UDA", "Valutazione & Rubriche", "Inclusione & BES/DSA",
+        "Metodologie Innovative & STEM", "Comunicazione & Tutorato"
+      ];
+      
+      const docTopics = [
+        // Progettazione & UDA
+        { titleIT: "UDA Interdisciplinare Agenda 2030", titleEN: "Interdisciplinary 2030 Agenda Unit", sub: 0 },
+        { titleIT: "Piano Lezione Flipped Classroom", titleEN: "Flipped Classroom Lesson Plan", sub: 0 },
+        { titleIT: "Modulo Educazione Civica Digitale", titleEN: "Digital Citizenship Module", sub: 0 },
+        { titleIT: "Progetto UDA STEAM e Sostenibilità", titleEN: "STEAM & Sustainability Unit", sub: 0 },
+        { titleIT: "Percorso PCTO e Competenze Trasversali", titleEN: "Career Readiness & Internship Module", sub: 0 },
+        { titleIT: "Unità Didattica Storytelling Storico", titleEN: "Historical Storytelling Unit", sub: 0 },
+        { titleIT: "Modulo CLIL di Scienze in Inglese", titleEN: "CLIL Science Module in English", sub: 0 },
+        { titleIT: "Laboratorio di Debate e Argomentazione", titleEN: "Debate & Argumentation Workshop", sub: 0 },
+        { titleIT: "UDA Service Learning per la Comunità", titleEN: "Community Service Learning Unit", sub: 0 },
+        { titleIT: "Progettazione Unità Didattica di Filosofia", titleEN: "Philosophy Didactic Unit Design", sub: 0 },
+
+        // Valutazione & Rubriche
+        { titleIT: "Rubrica Valutativa Competenze Chiave", titleEN: "Key Competency Evaluation Rubric", sub: 1 },
+        { titleIT: "Griglia di Valutazione Prova Scritta", titleEN: "Written Exam Grading Matrix", sub: 1 },
+        { titleIT: "Scheda Autovalutazione Alunni", titleEN: "Student Self-Assessment Worksheet", sub: 1 },
+        { titleIT: "Protocollo Feedback Formativo Continuo", titleEN: "Continuous Formative Feedback Protocol", sub: 1 },
+        { titleIT: "Griglia Valutazione Colloquio Orale", titleEN: "Oral Exam Assessment Grid", sub: 1 },
+        { titleIT: "Rubrica Valutazione Lavoro di Gruppo", titleEN: "Group Work Evaluation Rubric", sub: 1 },
+        { titleIT: "Valutazione Compito di Realtà", titleEN: "Authentic Task Assessment Matrix", sub: 1 },
+        { titleIT: "Griglia Valutazione Attività di Laboratorio", titleEN: "Lab Practical Grading Matrix", sub: 1 },
+        { titleIT: "Valutazione Tra Pari (Peer Assessment)", titleEN: "Peer Assessment Framework", sub: 1 },
+        { titleIT: "Rubrica di Valutazione del Processo", titleEN: "Process Learning Evaluation Rubric", sub: 1 },
+
+        // Inclusione & BES/DSA
+        { titleIT: "Adattamento PEI Scuola Secondaria", titleEN: "Secondary School IEP Adaptation", sub: 2 },
+        { titleIT: "PDP per Studente con Dislessia e Disgrafia", titleEN: "Special Needs Plan (PDP) Dyslexia", sub: 2 },
+        { titleIT: "Adattamento Verifica Scritta di Matematica", titleEN: "Math Written Test Adaptation", sub: 2 },
+        { titleIT: "Mappe Concettuali Inclusive di Storia", titleEN: "Inclusive History Mind Maps", sub: 2 },
+        { titleIT: "Strategie Didattiche per Alunni con ADHD", titleEN: "Teaching Strategies for ADHD Students", sub: 2 },
+        { titleIT: "PEI Differenziato vs Ordinario", titleEN: "Differentiated vs Regular IEP Planning", sub: 2 },
+        { titleIT: "Piano di Tutoraggio Tra Pari Inclusivo", titleEN: "Inclusive Peer Tutoring Program", sub: 2 },
+        { titleIT: "Strumenti Compensativi Lingue Straniere", titleEN: "Foreign Language Accommodations", sub: 2 },
+        { titleIT: "Gestione Comportamenti Problematici in Aula", titleEN: "Classroom Behavior Intervention Plan", sub: 2 },
+        { titleIT: "Sintesi Didattica Profilo di Funzionamento", titleEN: "ICF Functional Profile Didactic Summary", sub: 2 },
+
+        // Metodologie Innovative & STEM
+        { titleIT: "Laboratorio Tinkering e Making Didattico", titleEN: "Tinkering & Maker Space Lab Plan", sub: 3 },
+        { titleIT: "Escape Room Didattica di Letteratura", titleEN: "Educational Literature Escape Room", sub: 3 },
+        { titleIT: "Creazione Podcast Scolastico Interdisciplinare", titleEN: "Interdisciplinary School Podcast Project", sub: 3 },
+        { titleIT: "Modulo Coding e Algoritmi con Scratch", titleEN: "Coding & Algorithms Scratch Module", sub: 3 },
+        { titleIT: "Gamification Apprendimento Geografia", titleEN: "Gamified Geography Learning Path", sub: 3 },
+        { titleIT: "Problemi di Matematica applicati alla Realtà", titleEN: "Real-World Mathematical Modeling", sub: 3 },
+        { titleIT: "Simulazioni Virtuali di Fisica e Chimica", titleEN: "Virtual Science Lab Simulations", sub: 3 },
+        { titleIT: "Inquiry Based Science Education (IBSE)", titleEN: "Inquiry Based Science Education", sub: 3 },
+        { titleIT: "Robotica Educativa per il Problem Solving", titleEN: "Educational Robotics Problem Solving", sub: 3 },
+        { titleIT: "Digital Storytelling in Storia e Arte", titleEN: "Digital Storytelling in History & Art", sub: 3 },
+
+        // Comunicazione & Tutorato
+        { titleIT: "Lettera di Presentazione Programma ai Genitori", titleEN: "Parent Course Syllabus Introductory Letter", sub: 4 },
+        { titleIT: "Piano Orientamento in Uscita e Futuro", titleEN: "Post-Secondary Career Orientation Plan", sub: 4 },
+        { titleIT: "Relazione Finale del Coordinatore di Classe", titleEN: "End-of-Year Class Coordinator Report", sub: 4 },
+        { titleIT: "Verbale Dettagliato Consiglio di Classe", titleEN: "Detailed Class Council Minutes Template", sub: 4 },
+        { titleIT: "Conduzione Colloqui Individuali Scuola-Famiglia", titleEN: "Parent-Teacher Conference Dialogue Guide", sub: 4 },
+        { titleIT: "Tutorato Individuale Alunni a Rischio", titleEN: "At-Risk Student One-on-One Mentoring", sub: 4 },
+        { titleIT: "Progetto Accoglienza e Integrazione Primini", titleEN: "First-Year Student Welcome Project", sub: 4 },
+        { titleIT: "Patto Educativo di Corresponsabilità Didattica", titleEN: "Educational Partnership Pact Draft", sub: 4 },
+        { titleIT: "Gestione Mediazione Conflitti tra Pari", titleEN: "Peer Conflict Mediation Guide", sub: 4 },
+        { titleIT: "Bilancio delle Competenze e Auto-Formazione", titleEN: "Teacher Self-Competency Assessment", sub: 4 }
+      ];
+
+      docTopics.forEach((t, idx) => {
+        const subName = docSubCats[t.sub];
+        presets.push({
+          id: `doc-${idx + 1}`,
+          roleCategory: "docente",
+          subCategory: subName,
+          title: { it: t.titleIT, en: t.titleEN },
+          badge: { it: "Docente", en: "Teacher" },
+          ruolo: {
+            it: `Sei un docente della scuola secondaria esperto in ${subName.toLowerCase()} e progettazione scolastica.`,
+            en: `You are a secondary school teacher specialized in ${subCatTranslations.en[subName] || subName}.`
+          },
+          contesto: {
+            it: `Classe di scuola secondaria (22 studenti, inclusi BES/DSA). Attività focalizzata su ${t.titleIT}.`,
+            en: `Secondary school class (22 students, inclusive context). Focus on ${t.titleEN}.`
+          },
+          obiettivo: {
+            it: `Elabora una proposta completa e strutturata per ${t.titleIT}.`,
+            en: `Draft a comprehensive, structured proposal for ${t.titleEN}.`
+          },
+          vincoli: {
+            it: "Rispetta le linee guida del Ministero dell'Istruzione, garantisci massima inclusività e specifica tempi e fasi.",
+            en: "Comply with Ministry guidelines, ensure full accessibility, and specify timing and phases."
+          },
+          output: {
+            it: "Fornisci il risultato in una tabella Markdown o schema suddiviso in sezioni operative.",
+            en: "Deliver output as a Markdown table or structured operational outline."
+          }
+        });
+      });
+
+      // 2. DIRIGENTE SCOLASTICO (50 ITEMS)
+      const dsSubCats = [
+        "Circolari & Disposizioni", "Atto di Indirizzo & PTOF", "Gestione Emergenze & Sicurezza",
+        "Relazioni Sindacali & Organi", "Innovazione & PNRR"
+      ];
+
+      const dsTopics = [
+        // Circolari
+        { titleIT: "Circolare Uso Etico dell'IA Generativa", titleEN: "Ethical Generative AI Use Circular", sub: 0 },
+        { titleIT: "Regolamento Uso Smartphone e Tablet", titleEN: "Mobile Device Policy Circular", sub: 0 },
+        { titleIT: "Disposizione Vigilanza Alunni e Ricreazione", titleEN: "Student Supervision & Recess Rules", sub: 0 },
+        { titleIT: "Direttiva Sicurezza e Prevenzione Infortuni", titleEN: "Safety Directive & Injury Prevention", sub: 0 },
+        { titleIT: "Protocollo Somministrazione Farmaci a Scuola", titleEN: "In-School Medication Protocol", sub: 0 },
+        { titleIT: "Circolare Permessi ed Assenze del Personale", titleEN: "Staff Leave & Absence Policy", sub: 0 },
+        { titleIT: "Disposizione Attività di Orientamento", titleEN: "Student Orientation Guidelines", sub: 0 },
+        { titleIT: "Piano Uscite Didattiche e Viaggi d'Istruzione", titleEN: "Field Trip & School Travel Plan", sub: 0 },
+        { titleIT: "Gestione Ritardi e Uscite Anticipate Alunni", titleEN: "Late Arrival & Early Departure Rules", sub: 0 },
+        { titleIT: "Protocollo Accoglienza Alunni Stranieri", titleEN: "Foreign Student Welcome Protocol", sub: 0 },
+
+        // Atto di Indirizzo
+        { titleIT: "Atto di Indirizzo del DS per il PTOF", titleEN: "Principal Strategic Directives for School Plan", sub: 1 },
+        { titleIT: "Integrazione RAV e Piano di Miglioramento", titleEN: "Self-Evaluation (RAV) & Improvement Plan", sub: 1 },
+        { titleIT: "Rendicontazione Sociale e Bilancio Sociale", titleEN: "Social Accountability & Impact Report", sub: 1 },
+        { titleIT: "Curricolo Integrato Digitale d'Istituto", titleEN: "Integrated Digital Curriculum Plan", sub: 1 },
+        { titleIT: "Piano Triennale Formazione Docenti", titleEN: "Three-Year Teacher Training Strategy", sub: 1 },
+        { titleIT: "Politiche Inclusione e Politica Scolastica", titleEN: "Institutional School Inclusion Policy", sub: 1 },
+        { titleIT: "Accordi di Rete tra Istituti Scolastici", titleEN: "Inter-School Network Agreements", sub: 1 },
+        { titleIT: "Curricolo Trasversale Educazione Civica", titleEN: "Cross-Curricular Civics Framework", sub: 1 },
+        { titleIT: "Strategie Contrasto Calo Demografico", titleEN: "Demographic Decline Response Strategy", sub: 1 },
+        { titleIT: "Patto Educativo Territoriale con Enti Locali", titleEN: "Local Educational Community Pact", sub: 1 },
+
+        // Emergenze
+        { titleIT: "Piano Evacuazione e Prove Antincendio", titleEN: "Evacuation Plan & Fire Drill Notice", sub: 2 },
+        { titleIT: "Protocollo Gestione Infortuni Gravi", titleEN: "Severe Student Injury Response Protocol", sub: 2 },
+        { titleIT: "Comunicato Stampa Chiusura Allerta Meteo", titleEN: "Weather Alert Closure Press Release", sub: 2 },
+        { titleIT: "Gestione Casistica Cyberbullismo e Bullismo", titleEN: "Cyberbullying Case Management Protocol", sub: 2 },
+        { titleIT: "Interruzione Pubblico Servizio ed Emergenze", titleEN: "Public Service Interruption Emergency Plan", sub: 2 },
+        { titleIT: "Gestione Attacchi Informatici e Ransomware", titleEN: "Cybersecurity & Ransomware Incident Plan", sub: 2 },
+        { titleIT: "Valutazione Stress Lavoro-Correlato", titleEN: "Work-Related Stress Risk Assessment", sub: 3 },
+        { titleIT: "Nomina Addetti Antincendio e Primo Soccorso", titleEN: "Safety Officer & First Aid Appointments", sub: 2 },
+        { titleIT: "Messa in Sicurezza Immobile Scolastico", titleEN: "School Building Urgent Repair Request", sub: 2 },
+        { titleIT: "Protocollo Sanitario Malattie Infettive", titleEN: "Infectious Disease Health Protocol", sub: 2 },
+
+        // Relazioni Sindacali
+        { titleIT: "Atto Convocazione RSU e Contrattazione", titleEN: "Union Representation (RSU) Meeting Notice", sub: 3 },
+        { titleIT: "Contrattazione Integrativa d'Istituto", titleEN: "School Bargaining Agreement Framework", sub: 3 },
+        { titleIT: "Convocazione Collegio Docenti Inizio Anno", titleEN: "First Staff Meeting Agenda & Notice", sub: 3 },
+        { titleIT: "Verbale Assemblea Consiglio di Istituto", titleEN: "School Board Meeting Minutes Format", sub: 3 },
+        { titleIT: "Gestione Scioperi e Servizi Pubblici Minimi", titleEN: "Strike Management & Essential Services", sub: 3 },
+        { titleIT: "Criteri Assegnazione Docenti alle Classi", titleEN: "Teacher Class Assignment Criteria", sub: 3 },
+        { titleIT: "Criteri Valorizzazione Personale Docente", titleEN: "Teacher Merit Evaluation Criteria", sub: 3 },
+        { titleIT: "Regolamento Funzionamento Organi Collegiali", titleEN: "Governing Bodies Operational Rules", sub: 3 },
+        { titleIT: "Gestione Procedimenti Disciplinari Alunni", titleEN: "Student Disciplinary Proceeding Notice", sub: 3 },
+        { titleIT: "Consultazione Periodica RLS e Sicurezza", titleEN: "Safety Representative Consultation Notice", sub: 3 },
+
+        // PNRR & Innovazione
+        { titleIT: "Progetto PNRR Scuola 4.0 Labs", titleEN: "PNRR School 4.0 Labs Project Plan", sub: 4 },
+        { titleIT: "Piano Contrasto Dispersione Scolastica", titleEN: "Early School Leaving Reduction Plan", sub: 4 },
+        { titleIT: "Costituzione Team Innovazione Digitale", titleEN: "Digital Innovation Team Appointment", sub: 4 },
+        { titleIT: "Bando Reclutamento Esperti PNRR", titleEN: "PNRR Expert Recruitment Call", sub: 4 },
+        { titleIT: "Accordo Partenariato Terzo Settore", titleEN: "Non-Profit Educational Partnership", sub: 4 },
+        { titleIT: "Piano Transizione Digitale e STEM", titleEN: "STEM & Digital Transition Plan", sub: 4 },
+        { titleIT: "Progettazione Spazi Apprendimento Innovativi", titleEN: "Innovative Learning Spaces Design", sub: 4 },
+        { titleIT: "Accordi di Collaborazione ITS e Università", titleEN: "University & Vocational Academy Alliances", sub: 4 },
+        { titleIT: "Monitoraggio Milestone e Target PNRR", titleEN: "PNRR Milestone & Target Tracking Report", sub: 4 },
+        { titleIT: "Piano Internazionalizzazione Erasmus+", titleEN: "Erasmus+ International Mobility Strategy", sub: 4 }
+      ];
+
+      dsTopics.forEach((t, idx) => {
+        const subName = dsSubCats[t.sub];
+        presets.push({
+          id: `ds-${idx + 1}`,
+          roleCategory: "ds",
+          subCategory: subName,
+          title: { it: t.titleIT, en: t.titleEN },
+          badge: { it: "Dirigente (DS)", en: "Principal" },
+          ruolo: {
+            it: `Sei un Dirigente Scolastico esperto di governance istituzionale, normativa scolastica e ${subName.toLowerCase()}.`,
+            en: `You are a School Principal expert in institutional governance and ${subCatTranslations.en[subName] || subName}.`
+          },
+          contesto: {
+            it: `Istituto scolastico statale. Ambito operativo: ${t.titleIT}.`,
+            en: `Public K-12 school district. Operational context: ${t.titleEN}.`
+          },
+          obiettivo: {
+            it: `Predisponi un atto dirigenziale formale, circolare o provvedimento per ${t.titleIT}.`,
+            en: `Draft an official institutional decree, circular, or policy for ${t.titleEN}.`
+          },
+          vincoli: {
+            it: "Linguaggio burocratico e formale impecabile. Includi riferimenti normativi vigenti e struttura con Oggetto, Visti e Dispositivo.",
+            en: "Impeccable formal administrative language. Cite statutory codes with clear Preamble and Order sections."
+          },
+          output: {
+            it: "Documento ufficiale pronto per la pubblicazione all'Albo Online o invio al personale.",
+            en: "Official document layout ready for institutional publication or dispatch."
+          }
+        });
+      });
+
+      // 3. DSGA (50 ITEMS)
+      const dsgaSubCats = [
+        "Programma Annuale & Contabilità", "Gare & Acquisti (PNRR/MEPA)", "Gestione Personale ATA",
+        "Inventario & Patrimonio", "Adempimenti Fiscali & Audit"
+      ];
+
+      const dsgaTopics = [
+        // Contabilità
+        { titleIT: "Relazione Illustrativa Programma Annuale", titleEN: "Annual Budget Explanatory Report", sub: 0 },
+        { titleIT: "Variazione di Bilancio Progetto PNRR", titleEN: "PNRR Budget Amendment Directive", sub: 0 },
+        { titleIT: "Conto Consuntivo e Gestione Avanzo", titleEN: "Final Financial Audit & Surplus Allocation", sub: 0 },
+        { titleIT: "Verifica Trimestrale dei Revisori dei Conti", titleEN: "Quarterly Auditor Inspection Report", sub: 0 },
+        { titleIT: "Gestione e Rendicontazione Fondo Economale", titleEN: "Petty Cash Fund Audit & Accounting", sub: 0 },
+        { titleIT: "Radiazione Residui Attivi e Passivi", titleEN: "Active & Passive Residue Write-off Decree", sub: 0 },
+        { titleIT: "Riparto Fondo d'Istituto (MOF)", titleEN: "Staff Improvement Fund (MOF) Allocation", sub: 0 },
+        { titleIT: "Gestione Contributi Volontari delle Famiglie", titleEN: "Voluntary Family Contribution Tracking", sub: 0 },
+        { titleIT: "Piano Finanziario Progetti PON e FSE", titleEN: "EU Grant Financial Projection Report", sub: 0 },
+        { titleIT: "Monitoraggio Flussi di Cassa e Magazzino", titleEN: "Cash Flow & Warehouse Stock Audit", sub: 0 },
+
+        // Gare & Acquisti
+        { titleIT: "Determina Affidamento Diretto MEPA", titleEN: "MEPA Direct Contracting Order Decree", sub: 1 },
+        { titleIT: "Capitolato Tecnico Arredi Innovativi", titleEN: "Innovative Furniture Technical Specs", sub: 1 },
+        { titleIT: "Nomina RUP per Acquisti PNRR", titleEN: "Procurement Project Manager (RUP) Designation", sub: 1 },
+        { titleIT: "Tracciabilità Flussi e Richiesta CIG", titleEN: "Financial Traceability & CIG Code Procedure", sub: 1 },
+        { titleIT: "Verifica Requisiti Art. 94 D.Lgs 36/2023", titleEN: "Public Procurement Integrity Check", sub: 1 },
+        { titleIT: "Stipula Trattativa Diretta sul MEPA", titleEN: "MEPA Direct Negotiation Contract", sub: 1 },
+        { titleIT: "Verbale di Collaudo e Conformità Fornitura", titleEN: "Supply Conformity & Inspection Certificate", sub: 1 },
+        { titleIT: "Determina a Contrarre Sopra Soglia", titleEN: "Above-Threshold Procurement Decree", sub: 1 },
+        { titleIT: "Gestione Fideiussioni e Garanzie", titleEN: "Performance Bond & Security Verification", sub: 1 },
+        { titleIT: "Verifica Regolarità Contributiva DURC", titleEN: "DURC Tax & Social Security Compliance Check", sub: 1 },
+
+        // Personale ATA
+        { titleIT: "Piano delle Attività del Personale ATA", titleEN: "Admin & Support Staff Activity Plan", sub: 2 },
+        { titleIT: "Disposizione Straordinario e Plusorario ATA", titleEN: "Overtime & Extra Hours Work Authorization", sub: 2 },
+        { titleIT: "Assegnazione Mansioni Specifiche ATA", titleEN: "Staff Specific Job Duties Designation", sub: 2 },
+        { titleIT: "Piano Ferie e Festività Soppresse", titleEN: "Staff Annual Leave & Holiday Schedule", sub: 2 },
+        { titleIT: "Gestione Assenze e Visite Fiscali", titleEN: "Medical Leave & Fiscal Inspection Requests", sub: 2 },
+        { titleIT: "Piano Formazione Sicurezza Personale ATA", titleEN: "Staff Mandatory Safety Training Plan", sub: 2 },
+        { titleIT: "Disposizione Sostituzione DSGA Facente Funzioni", titleEN: "Acting Admin Director Delegation Decree", sub: 2 },
+        { titleIT: "Incarichi Specifici Art. 54 CCNL", titleEN: "Special Duty Compensation Assignment", sub: 2 },
+        { titleIT: "Valutazione Performance Personale ATA", titleEN: "Support Staff Performance Assessment", sub: 2 },
+        { titleIT: "Gestione Turnazioni e Aperture Plessi", titleEN: "Shift Scheduling & Facility Opening Rules", sub: 2 },
+
+        // Inventario
+        { titleIT: "Rinnovo Inventario Decennale Beni", titleEN: "Ten-Year Asset Inventory Renewal Plan", sub: 3 },
+        { titleIT: "Collaudo e Inventariazione Beni PNRR", titleEN: "PNRR Asset Labeling & Inventory Record", sub: 3 },
+        { titleIT: "Scarico Inventariale e Fuori Uso", titleEN: "Asset Decommissioning & Disposal Decree", sub: 3 },
+        { titleIT: "Passaggio di Consegna Tra DSGA", titleEN: "Handover Record Between Admin Directors", sub: 3 },
+        { titleIT: "Registro Beni Durevoli vs Consumabili", titleEN: "Durable Goods vs Consumables Register", sub: 3 },
+        { titleIT: "Gestione Donazioni e Comodato d'Uso", titleEN: "Asset Donation & Loan Agreement", sub: 3 },
+        { titleIT: "Etichettatura Barcode/QR Code Asset", titleEN: "Barcode/QR Code Asset Management Protocol", sub: 3 },
+        { titleIT: "Registro Custodi Aule Speciali e Lab", titleEN: "Special Lab Custodian Registry Plan", sub: 3 },
+        { titleIT: "Richiesta Intervento Manutenzione Ente Locale", titleEN: "Local Authority Building Repair Request", sub: 3 },
+        { titleIT: "Ricognizione Patrimoniale di Fine Anno", titleEN: "End-of-Year School Asset Reconcilation", sub: 3 },
+
+        // Fiscali & Audit
+        { titleIT: "Adempimenti Dichiarazione IRAP e 770", titleEN: "IRAP & 770 Annual Tax Filing Routine", sub: 4 },
+        { titleIT: "Gestione Certificazione Unica CU Docenti", titleEN: "Tax Certificate (CU) Processing SOP", sub: 4 },
+        { titleIT: "Gestione Piattaforma Crediti PCC Pagamenti", titleEN: "PCC Commercial Credit Platform Audit", sub: 4 },
+        { titleIT: "Anagrafe delle Prestazioni PERLA PA", titleEN: "PERLA PA Public Consultant Reporting", sub: 4 },
+        { titleIT: "Controllo Regolarità Contabile e Fiscale", titleEN: "Accounting Regularity Internal Audit", sub: 4 },
+        { titleIT: "Adempimenti Split Payment e IVA", titleEN: "Split Payment VAT Settlement Procedure", sub: 4 },
+        { titleIT: "Gestione Piattaforma Spesa Miur", titleEN: "Ministry Expenditure Portal Reconciliation", sub: 4 },
+        { titleIT: "Audit della Corte dei Conti Scolastica", titleEN: "Court of Auditors Compliance Dossier", sub: 4 },
+        { titleIT: "Gestione Reversali e Mandati di Pagamento", titleEN: "Payment Warrants & Receipts Reconciliation", sub: 4 },
+        { titleIT: "Verifica Tempestività Pagamenti PA", titleEN: "Public Payment Timeliness Index Audit", sub: 4 }
+      ];
+
+      dsgaTopics.forEach((t, idx) => {
+        const subName = dsgaSubCats[t.sub];
+        presets.push({
+          id: `dsga-${idx + 1}`,
+          roleCategory: "dsga",
+          subCategory: subName,
+          title: { it: t.titleIT, en: t.titleEN },
+          badge: { it: "DSGA", en: "Admin Director" },
+          ruolo: {
+            it: `Sei un DSGA (Direttore dei Servizi Generali e Amministrativi) esperto in contabilità pubblica scolastica (D.I. 129/2018) e ${subName.toLowerCase()}.`,
+            en: `You are a School Finance & Admin Director (DSGA) expert in school accounting and ${subCatTranslations.en[subName] || subName}.`
+          },
+          contesto: {
+            it: `Gestione economico-finanziaria e patrimoniale dell'istituzione scolastica statale. Ambito: ${t.titleIT}.`,
+            en: `Public school financial and asset management. Domain: ${t.titleEN}.`
+          },
+          obiettivo: {
+            it: `Elabora una relazione contabile, determina o atti amministrativi per ${t.titleIT}.`,
+            en: `Draft an administrative report, procurement order, or financial statement for ${t.titleEN}.`
+          },
+          vincoli: {
+            it: "Rispetta rigorosamente il D.I. 129/2018, il Codice dei Contratti (D.Lgs. 36/2023) ed i principi di trasparenza contabile.",
+            en: "Strictly adhere to Public Accounting Decrees, Public Procurement Code, and financial transparency standards."
+          },
+          output: {
+            it: "Format tecnico-contabile formale pronto per la firma o la trasmissione agli organi di controllo.",
+            en: "Formal accounting layout ready for certification or auditor submission."
+          }
+        });
+      });
+
+      // 4. AMMINISTRATIVO (50 ITEMS)
+      const admSubCats = [
+        "Protocollo & Archiviazione", "Carriera & Ricostruzioni", "Didattica & Iscrizioni",
+        "Contratti & Supplenze", "Certificazioni & Modulistica"
+      ];
+
+      const admTopics = [
+        // Protocollo
+        { titleIT: "Gestione Protocollo Informatico e Titolario", titleEN: "Electronic Filing & Titoolario Classification", sub: 0 },
+        { titleIT: "Procedura Scarto Atti e Archivio Storico", titleEN: "Document Disposal & Historical Archives SOP", sub: 0 },
+        { titleIT: "Istanza Accesso agli Atti (L. 241/90)", titleEN: "Public Records Access Request (Freedom of Info)", sub: 0 },
+        { titleIT: "Gestione PEC e Posta Istituzionale", titleEN: "Official Certified Email (PEC) Management", sub: 0 },
+        { titleIT: "Dematerializzazione Fascicoli Personale", titleEN: "Personnel Records Digitalization Procedure", sub: 0 },
+        { titleIT: "Archiviazione Documenti Riservati e Privacy", titleEN: "Confidential File Archiving & GDPR", sub: 0 },
+        { titleIT: "Protocollo Segreto e Documenti Riservati", titleEN: "Restricted Access Document Protocol", sub: 0 },
+        { titleIT: "Gestione Registro Segreteria e Decreti", titleEN: "Official School Registry & Decrees SOP", sub: 0 },
+        { titleIT: "Notifica Atti ed Ingiunzioni", titleEN: "Legal Notices & Summons Delivery Procedure", sub: 0 },
+        { titleIT: "Gestione Archivi Digitali e Cloud Segreteria", titleEN: "Cloud Archiving & Backup Procedures", sub: 0 },
+
+        // Carriera
+        { titleIT: "Decreto Ricostruzione Carriera Docente", titleEN: "Teacher Seniority Reconstruction Decree", sub: 1 },
+        { titleIT: "Calcolo Preruolo Personale ATA", titleEN: "Support Staff Pre-Tenure Recognition", sub: 1 },
+        { titleIT: "Inquadramento Stipendiale e Scatti", titleEN: "Salary Step Adjustment Processing", sub: 1 },
+        { titleIT: "Passaggio di Ruolo e Gradone Retributivo", titleEN: "Role Transfer Salary Adjustment Decree", sub: 1 },
+        { titleIT: "Pratiche Riscatto Laurea e Computo", titleEN: "Pension Service Redemption Request", sub: 1 },
+        { titleIT: "Rilascio Certificati di Servizio Storici", titleEN: "Historical Service Record Certificate", sub: 1 },
+        { titleIT: "Inserimento Dati Passweb INPS Pensioni", titleEN: "INPS Passweb Pension Data Entry SOP", sub: 1 },
+        { titleIT: "Pratiche Pensionamento Opzione Donna / Quota", titleEN: "Staff Retirement Eligibility Processing", sub: 1 },
+        { titleIT: "Sanatoria e Conguagli Contributivi", titleEN: "Social Security Contribution Adjustments", sub: 1 },
+        { titleIT: "Certificazione Stato Servizio per Frequenza", titleEN: "Official Service Verification Letter", sub: 1 },
+
+        // Didattica
+        { titleIT: "Gestione Iscrizioni Online e Graduatorie", titleEN: "Online Student Enrollment & Merit Lists", sub: 2 },
+        { titleIT: "Formazione Classi Prime e Criteri", titleEN: "Incoming Student Class Assignment Records", sub: 2 },
+        { titleIT: "Nulla Osta e Trasferimento Alunni", titleEN: "Student Transfer & Departure Authorization", sub: 2 },
+        { titleIT: "Rilascio Certificati di Diploma e Sostitutivi", titleEN: "Diploma Certificate Issuance Protocol", sub: 2 },
+        { titleIT: "Gestione Infortuni Alunni e Assicurazione", titleEN: "Student Injury Insurance Claim SOP", sub: 2 },
+        { titleIT: "Anagrafica Nazionale Studenti (ANS) Audit", titleEN: "National Student Registry (ANS) Audit", sub: 2 },
+        { titleIT: "Gestione Documenti Esami di Stato", titleEN: "State Graduation Exam Administrative Dossier", sub: 2 },
+        { titleIT: "Pratiche Alunni Stranieri e Permesso Soggiorno", titleEN: "Foreign Student Residency Documentation", sub: 2 },
+        { titleIT: "Rilevazione Assenze e Tabelloni Scrutinio", titleEN: "Student Attendance & Report Card Publishing", sub: 2 },
+        { titleIT: "Gestione Libri di Testo e Dote Scuola", titleEN: "Textbook Grant & Voucher Program Management", sub: 2 },
+
+        // Contratti
+        { titleIT: "Stipula Contratto Supplenza Breve Docente", titleEN: "Short-Term Substitute Teacher Contract", sub: 3 },
+        { titleIT: "Convocazione da Graduatorie GPS e GI", titleEN: "Substitute Teacher Call Notice (GPS/GI)", sub: 3 },
+        { titleIT: "Verifica Titoli di Studio e Servizio Dichiara", titleEN: "Academic Degree & Prior Service Verification", sub: 3 },
+        { titleIT: "Convalida Punteggio Graduatoria D'Istituto", titleEN: "Merit Score Validation Decree", sub: 3 },
+        { titleIT: "Procedura Presa di Servizio e Documentazione", titleEN: "New Staff Onboarding & Duty Assumption", sub: 3 },
+        { titleIT: "Gestione Proroghe e Incompatibilità Lavorativa", titleEN: "Contract Extension & Conflict of Interest Check", sub: 3 },
+        { titleIT: "Comunicazione Obbligatoria UNILAV al Centro Impiego", titleEN: "UNILAV Mandatory Employment Notice", sub: 3 },
+        { titleIT: "Risoluzione Contratto e Licenziamento", titleEN: "Contract Termination & Dismissal Decree", sub: 3 },
+        { titleIT: "Gestione Maternità e Congedi Parentali", titleEN: "Maternity Leave & Parental Absence SOP", sub: 3 },
+        { titleIT: "Contratti Esperti Esterni e Prestazione d'Opera", titleEN: "External Expert Professional Services Contract", sub: 3 },
+
+        // Certificazioni
+        { titleIT: "Rilascio Certificato Sostitutivo Diploma", titleEN: "Official Replacement Diploma Statement", sub: 4 },
+        { titleIT: "Modulistica Richiesta Permessi Retribuiti", titleEN: "Paid Absence Request Form Processing", sub: 4 },
+        { titleIT: "Certificazione Redditi e Compensi Accessori", titleEN: "Extra Duty Compensation Earnings Statement", sub: 4 },
+        { titleIT: "Dichiarazione Sostitutiva Atto di Notorietà", titleEN: "Self-Declaration Affidavit Verification", sub: 4 },
+        { titleIT: "Modulo Esercizio Diritto di Accesso FOIA", titleEN: "FOIA Information Access Request Form", sub: 4 },
+        { titleIT: "Certificato di Frequenza e Buona Condotta", titleEN: "Student Attendance & Conduct Certificate", sub: 4 },
+        { titleIT: "Richiesta Congedo Parentale e Legge 104", titleEN: "Special Family Care Leave Request (L. 104)", sub: 4 },
+        { titleIT: "Modulo Incompatibilità e Autorizzazione Doppio Lavoro", titleEN: "Dual Employment Authorization Application", sub: 4 },
+        { titleIT: "Certificazione Formazione Obbligatoria Sicurezza", titleEN: "Mandatory Safety Training Certificate", sub: 4 },
+        { titleIT: "Autocertificazione Titoli e Servizi Prestati", titleEN: "Self-Certified Qualifications Audit Form", sub: 4 }
+      ];
+
+      admTopics.forEach((t, idx) => {
+        const subName = admSubCats[t.sub];
+        presets.push({
+          id: `adm-${idx + 1}`,
+          roleCategory: "amministrativo",
+          subCategory: subName,
+          title: { it: t.titleIT, en: t.titleEN },
+          badge: { it: "Amministrativo", en: "Admin Staff" },
+          ruolo: {
+            it: `Sei un assistente amministrativo esperto in gestione della segreteria scolastica, norme sulla trasparenza e ${subName.toLowerCase()}.`,
+            en: `You are a school administrative assistant expert in front-office procedures and ${subCatTranslations.en[subName] || subName}.`
+          },
+          contesto: {
+            it: `Segreteria amministrativa e didattica di un istituto scolastico statale. Caso: ${t.titleIT}.`,
+            en: `Public school administrative office. Scenario: ${t.titleEN}.`
+          },
+          obiettivo: {
+            it: `Redigi la bozza ufficiale di un atto, certificato o decreto riguardante ${t.titleIT}.`,
+            en: `Draft the official template, certificate, or administrative decree for ${t.titleEN}.`
+          },
+          vincoli: {
+            it: "Linguaggio formale, precisione procedurale, aderenza al Codice dell'Amministrazione Digitale (CAD) e normativa scolastica.",
+            en: "Formal tone, procedural accuracy, adherence to Digital Administration Code and school regulations."
+          },
+          output: {
+            it: "Bozza formale pronta per il protocollo e la sottoscrizione del Dirigente o DSGA.",
+            en: "Formal draft ready for registration and executive signature."
+          }
+        });
+      });
+
+      // 5. TECNICO DI LABORATORIO (50 ITEMS)
+      const tecSubCats = [
+        "Preparazione Esperienze & Reagenti", "Sicurezza & DPI", "Manutenzione & Inventario",
+        "Assistenza Didattica & Inclusione", "Gestione Hardware & Software"
+      ];
+
+      const tecTopics = [
+        // Reagenti
+        { titleIT: "Preparazione Reagenti per Titolazione Acido-Base", titleEN: "Preparation of Reagents for Acid-Base Titration", sub: 0 },
+        { titleIT: "Allestimento Microscopi e Preparati Citologici", titleEN: "Microscope Setup & Cytology Slide Prep", sub: 0 },
+        { titleIT: "Preparazione Terreni di Coltura e Sterilizzazione", titleEN: "Culture Media Prep & Autoclave Sterilization", sub: 0 },
+        { titleIT: "Allestimento Rotaia a Cuscino d'Aria per Fisica", titleEN: "Air Track Setup for Physics Kinematics Lab", sub: 0 },
+        { titleIT: "Set-up Banchi Prova Misure Elettriche AC/DC", titleEN: "Setup of AC/DC Electrical Measurement Benches", sub: 0 },
+        { titleIT: "Taratura Spettrofotometro UV-Visibile", titleEN: "UV-Vis Spectrophotometer Calibration", sub: 0 },
+        { titleIT: "Estrazione del DNA Vegetale per Laboratorio", titleEN: "Plant DNA Extraction Lab Protocol", sub: 0 },
+        { titleIT: "Set-up Reazioni di Ossidoriduzione ed Elettrochimica", titleEN: "Redox & Electrochemistry Lab Setup", sub: 0 },
+        { titleIT: "Sintesi Polimeri e Nylon in Laboratorio", titleEN: "Polymer & Nylon Synthesis Lab Prep", sub: 0 },
+        { titleIT: "Saggi alla Fiamma e Spettri di Emissione", titleEN: "Flame Tests & Atomic Emission Lab Prep", sub: 0 },
+
+        // Sicurezza
+        { titleIT: "Protocollo Smaltimento Rifiuti Chimici Speciali", titleEN: "Special Chemical Waste Disposal Protocol", sub: 1 },
+        { titleIT: "Protocollo Emergenza per Sversamento Acido Corrosivo", titleEN: "Corrosive Acid Spill Emergency Protocol", sub: 1 },
+        { titleIT: "Sicurezza e Messa a Terra Quadri Didattici", titleEN: "Educational Electrical Panel Safety & Grounding", sub: 1 },
+        { titleIT: "Archiviazione Schede Sicurezza SDS e GHS", titleEN: "Safety Data Sheets (SDS) & GHS Archiving", sub: 1 },
+        { titleIT: "Verifica Funzionalità Lavaocchi e Docce d'Emergenza", titleEN: "Eyewash Station & Emergency Shower Audit", sub: 1 },
+        { titleIT: "Gestione e Stoccaggio Bombole Gas Compressi", titleEN: "Compressed Gas Cylinder Handling & Storage", sub: 1 },
+        { titleIT: "Nostre Linee Guida Inizio Anno Sicurezza Lab", titleEN: "Beginning-of-Year Lab Safety Protocol", sub: 1 },
+        { titleIT: "Compilazione Registro Infortuni di Laboratorio", titleEN: "Lab Injury Incident Registry Logging", sub: 1 },
+        { titleIT: "Dotazione DPI Respiratori e Guanti Anti-Acido", titleEN: "Acid-Resistant PPE & Respiratory Mask Audit", sub: 1 },
+        { titleIT: "Audit di Rischio Chimico e Biologico", titleEN: "Chemical & Biological Risk Assessment Audit", sub: 1 },
+
+        // Manutenzione
+        { titleIT: "Bonifica e Collaudo Cappa ad Aspirazione Chimica", titleEN: "Fume Hood Sanitization & Airflow Verification", sub: 2 },
+        { titleIT: "Registro Carico/Scarico Reagenti e Sostanze Pericolose", titleEN: "Hazardous Chemical Substances Stock Registry", sub: 2 },
+        { titleIT: "Taratura e Calibrazione pH-metri e Bilance Analitiche", titleEN: "Calibration of pH Meters & Analytical Balances", sub: 2 },
+        { titleIT: "Inventario Annuale Vetreria e Materiale Monouso", titleEN: "Annual Glassware & Disposable Supplies Inventory", sub: 2 },
+        { titleIT: "Manutenzione Stampanti 3D e Cambio Filamenti", titleEN: "3D Printer Maintenance & Filament Care", sub: 2 },
+        { titleIT: "Verifica e Pulizia Ottiche Laser nel Lab di Fisica", titleEN: "Physics Lab Laser Optics Verification & Cleaning", sub: 2 },
+        { titleIT: "Ripristino e Collaudo Alimentatori da Banco", titleEN: "Bench Power Supplies Repair & Inspection", sub: 2 },
+        { titleIT: "Verifica Anemometrica Flusso d'Aria Cappe", titleEN: "Anemometric Fume Hood Airflow Check", sub: 2 },
+        { titleIT: "Manutenzione Centrifughe da Laboratorio", titleEN: "Lab Centrifuge Maintenance & Balancing", sub: 2 },
+        { titleIT: "Rigenerazione Resine Deionizzatore Acqua", titleEN: "Water Deionizer Resin Regeneration", sub: 2 },
+
+        // Inclusione
+        { titleIT: "Allestimento Kit Didattici Individuali d'Esame", titleEN: "Setup of Individual Practical Exam Kits", sub: 3 },
+        { titleIT: "Organizzazione Kit Componenti Elettronici Inclusivi", titleEN: "Classroom Electronic Component Kit Organization", sub: 3 },
+        { titleIT: "Supporto Tecnico per Studentessa Ipovedente", titleEN: "Assistive Technology Lab Setup for Visually Impaired", sub: 3 },
+        { titleIT: "Adattamento Postazione Laboratorio Disabilità Motoria", titleEN: "Wheelchair Accessible Lab Workstation Setup", sub: 3 },
+        { titleIT: "Preparazione Postazioni Simultanee per Sessione Pratica", titleEN: "Simultaneous Practical Exam Workstation Prep", sub: 3 },
+        { titleIT: "Scheda Guida Esperimento con Caratteri Leggibili (DSA)", titleEN: "Dyslexia-Friendly Lab Experiment Worksheet", sub: 3 },
+        { titleIT: "Tutoraggio Tecnico per Alunni Durante la Prova Pratica", titleEN: "Technical Mentoring During Practical Lab Work", sub: 3 },
+        { titleIT: "Creazione Video-Tutor per Uso Strumenti di Lab", titleEN: "Lab Equipment Video Tutorial Creation", sub: 3 },
+        { titleIT: "Allestimento Stand e Progetti per Fiera della Scienza", titleEN: "Science Fair Project Exhibition Setup", sub: 3 },
+        { titleIT: "Scheda di Valutazione Autonomia Pratica Alunno", titleEN: "Student Practical Autonomy Checklist", sub: 3 },
+
+        // Hardware / Software
+        { titleIT: "Collaudo Banchi Robotica Arduino & Raspberry Pi", titleEN: "Arduino & Raspberry Pi Robotics Lab Testing", sub: 4 },
+        { titleIT: "Distribuzione Immagine OS via Rete PXE / FOG", titleEN: "PXE / FOG Network OS Image Deployment", sub: 4 },
+        { titleIT: "Configurazione VLAN e Firewall per Laboratori", titleEN: "Lab VLAN & Firewall Isolation Configuration", sub: 4 },
+        { titleIT: "Setup Macchine Virtuali per Esercitazioni Cybersecurity", titleEN: "Virtual Machine Setup for Cybersecurity Labs", sub: 4 },
+        { titleIT: "Manutenzione Preventiva e Pulizia Hardware PC", titleEN: "PC Hardware Preventive Maintenance & Cleaning", sub: 4 },
+        { titleIT: "Backup e Disaster Recovery Server Didattico", titleEN: "Educational Server Backup & Disaster Recovery", sub: 4 },
+        { titleIT: "Gestione Licenze Software e Audit Conformità", titleEN: "Software License Management & Compliance Audit", sub: 4 },
+        { titleIT: "Configurazione Router & Switch Cisco per Telecomunicazioni", titleEN: "Cisco Router & Switch Config for Telecom Labs", sub: 4 },
+        { titleIT: "Cablaggio e Certificazione Patch Panel Rack Lab", titleEN: "Patch Panel Wiring & Rack Certification", sub: 4 },
+        { titleIT: "Gestione Account Active Directory e Credenziali", titleEN: "Student Account Management & Password Resets", sub: 4 }
+      ];
+
+      tecTopics.forEach((t, idx) => {
+        const subName = tecSubCats[t.sub];
+        presets.push({
+          id: `tec-${idx + 1}`,
+          roleCategory: "tecnico",
+          subCategory: subName,
+          title: { it: t.titleIT, en: t.titleEN },
+          badge: { it: "Tecnico Lab.", en: "Lab Tech" },
+          ruolo: {
+            it: `Sei un assistente tecnico di laboratorio specializzato in sicurezza, allestimento e ${subName.toLowerCase()}.`,
+            en: `You are a laboratory technician expert in laboratory safety and ${subCatTranslations.en[subName] || subName}.`
+          },
+          contesto: {
+            it: `Laboratorio didattico e scientifico/tecnologico dell'istituto. Attività: ${t.titleIT}.`,
+            en: `School science/technology laboratory environment. Task: ${t.titleEN}.`
+          },
+          obiettivo: {
+            it: `Elabora una scheda di laboratorio, protocollo di sicurezza o procedura tecnica per ${t.titleIT}.`,
+            en: `Draft a technical procedure, safety protocol, or lab setup sheet for ${t.titleEN}.`
+          },
+          vincoli: {
+            it: "Specificare DPI obbligatori, norme D.Lgs. 81/08, checklist operative e fasi temporali.",
+            en: "Mandate specific PPE, D.Lgs. 81/08 safety codes, operational checklists, and step-by-step instructions."
+          },
+          output: {
+            it: "Scheda tecnica operativa in tabella Markdown con checklist di sicurezza integrata.",
+            en: "Operational technical sheet in Markdown table format with integrated safety checklist."
+          }
+        });
+      });
+
+      return presets;
+    }
+
+    // Populate Master Library Array
+    const presetLibrary = buildComplete250Presets();
+
+    // Language Switcher Function
+    function setLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('school_prompt_lang', lang);
+      document.documentElement.lang = lang;
+
+      // Update Active Button Styling
+      const btnIt = document.getElementById('btn-lang-it');
+      const btnEn = document.getElementById('btn-lang-en');
+      if (lang === 'it') {
+        btnIt.classList.add('lang-btn-active');
+        btnIt.classList.remove('text-indigo-200');
+        btnEn.classList.remove('lang-btn-active');
+        btnEn.classList.add('text-indigo-200');
+      } else {
+        btnEn.classList.add('lang-btn-active');
+        btnEn.classList.remove('text-indigo-200');
+        btnIt.classList.remove('lang-btn-active');
+        btnIt.classList.add('text-indigo-200');
+      }
+
+      // Translate Static UI Elements
+      const t = i18n[lang];
+      document.getElementById('txt-header-title').innerText = t.headerTitle;
+      document.getElementById('txt-header-subtitle').innerText = t.headerSubtitle;
+      document.getElementById('txt-header-badge').innerText = t.headerBadge;
+
+      document.getElementById('txt-tab-builder').innerText = t.tabBuilder;
+      document.getElementById('txt-tab-library').innerText = t.tabLibrary;
+      document.getElementById('txt-tab-guide').innerText = t.tabGuide;
+
+      document.getElementById('txt-formula-title').innerText = t.formulaTitle;
+      document.getElementById('badge-r').innerText = t.badgeR;
+      document.getElementById('badge-c').innerText = t.badgeC;
+      document.getElementById('badge-o1').innerText = t.badgeO1;
+      document.getElementById('badge-v').innerText = t.badgeV;
+      document.getElementById('badge-o2').innerText = t.badgeO2;
+
+      document.getElementById('lbl-quick-select').innerHTML = `<i class="fa-solid fa-bolt text-amber-500"></i> ${t.quickSelectLabel}`;
+      document.getElementById('role-btn-docente').innerText = t.roleDocente;
+      document.getElementById('role-btn-ds').innerText = t.roleDs;
+      document.getElementById('role-btn-dsga').innerText = t.roleDsga;
+      document.getElementById('role-btn-amministrativo').innerText = t.roleAdmin;
+      if (document.getElementById('role-btn-tecnico')) {
+        document.getElementById('role-btn-tecnico').innerText = t.roleTecnico;
+      }
+
+      document.getElementById('lbl-r-title').innerText = t.rTitle;
+      document.getElementById('lbl-r-sub').innerText = t.rSub;
+      document.getElementById('input-ruolo').placeholder = t.rPlaceholder;
+
+      document.getElementById('lbl-c-title').innerText = t.cTitle;
+      document.getElementById('lbl-c-sub').innerText = t.cSub;
+      document.getElementById('input-contesto').placeholder = t.cPlaceholder;
+
+      document.getElementById('lbl-o1-title').innerText = t.o1Title;
+      document.getElementById('lbl-o1-sub').innerText = t.o1Sub;
+      document.getElementById('input-obiettivo').placeholder = t.o1Placeholder;
+
+      document.getElementById('lbl-v-title').innerText = t.vTitle;
+      document.getElementById('lbl-v-sub').innerText = t.vSub;
+      document.getElementById('input-vincoli').placeholder = t.vPlaceholder;
+
+      document.getElementById('lbl-o2-title').innerText = t.o2Title;
+      document.getElementById('lbl-o2-sub').innerText = t.o2Sub;
+      document.getElementById('input-output').placeholder = t.o2Placeholder;
+
+      document.getElementById('btn-reset-text').innerText = t.btnReset;
+      document.getElementById('txt-preview-header').innerText = t.previewHeader;
+      document.getElementById('copy-btn-text').innerText = t.copyBtnText;
+      document.getElementById('txt-hint-title').innerText = t.hintTitle;
+      document.getElementById('txt-hint-body').innerText = t.hintBody;
+
+      // Library UI
+      document.getElementById('txt-library-title').innerHTML = `<i class="fa-solid fa-book-open text-indigo-600"></i> ${t.libraryTitle}`;
+      document.getElementById('txt-library-subtitle').innerText = t.librarySubtitle;
+      document.getElementById('library-search').placeholder = t.searchPlaceholder;
+      document.getElementById('lbl-filter-roles').innerText = t.filterRolesLabel;
+
+      document.getElementById('filter-role-all').innerText = t.roleAll;
+      document.getElementById('filter-role-docente').innerText = t.roleDocenteFilter;
+      document.getElementById('filter-role-ds').innerText = t.roleDsFilter;
+      document.getElementById('filter-role-dsga').innerText = t.roleDsgaFilter;
+      document.getElementById('filter-role-amministrativo').innerText = t.roleAdminFilter;
+      if (document.getElementById('filter-role-tecnico')) {
+        document.getElementById('filter-role-tecnico').innerText = t.roleTecnicoFilter;
+      }
+      document.getElementById('btn-reset-filters').innerText = t.resetFilters;
+
+      // Guide UI
+      document.getElementById('txt-guide-title').innerHTML = `<i class="fa-solid fa-graduation-cap text-indigo-600"></i> ${t.guideTitle}`;
+      document.getElementById('txt-guide-subtitle').innerText = t.guideSubtitle;
+      document.getElementById('txt-guide-r-head').innerText = t.guideRHead;
+      document.getElementById('txt-guide-r-desc').innerText = t.guideRDesc;
+      document.getElementById('txt-guide-r-ex').innerText = t.guideREx;
+      document.getElementById('txt-guide-c-head').innerText = t.guideCHead;
+      document.getElementById('txt-guide-c-desc').innerText = t.guideCDesc;
+      document.getElementById('txt-guide-c-ex').innerText = t.guideCEx;
+      document.getElementById('txt-guide-o1-head').innerText = t.guideO1Head;
+      document.getElementById('txt-guide-o1-desc').innerText = t.guideO1Desc;
+      document.getElementById('txt-guide-o1-ex').innerText = t.guideO1Ex;
+      document.getElementById('txt-guide-v-head').innerText = t.guideVHead;
+      document.getElementById('txt-guide-v-desc').innerText = t.guideVDesc;
+      document.getElementById('txt-guide-v-ex').innerText = t.guideVEx;
+      document.getElementById('txt-guide-o2-head').innerText = t.guideO2Head;
+      document.getElementById('txt-guide-o2-desc').innerText = t.guideO2Desc;
+      document.getElementById('txt-guide-o2-ex').innerText = t.guideO2Ex;
+
+      // Footer UI
+      document.getElementById('txt-footer-copy').innerText = t.footerCopy;
+      document.getElementById('txt-footer-desc').innerText = t.footerDesc;
+
+      // Re-render components
+      updatePrompt();
+      renderSubcategoryFilters();
+      filterLibrary();
+    }
+
+    function switchTab(tabId) {
+      currentTab = tabId;
+      document.getElementById('content-builder').classList.add('hidden');
+      document.getElementById('content-library').classList.add('hidden');
+      document.getElementById('content-guide').classList.add('hidden');
+
+      document.getElementById('tab-builder').classList.remove('tab-active');
+      document.getElementById('tab-library').classList.remove('tab-active');
+      document.getElementById('tab-guide').classList.remove('tab-active');
+
+      document.getElementById(`content-${tabId}`).classList.remove('hidden');
+      document.getElementById(`tab-${tabId}`).classList.add('tab-active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Role Presets for Quick Choice in Builder Tab
+    function applyRolePreset(role) {
+      const p = presetLibrary.find(item => item.roleCategory === role) || presetLibrary[0];
+      loadPresetIntoBuilder(p.id);
+    }
+
+    // Update Live Generated Prompt
+    function updatePrompt() {
+      const r = document.getElementById('input-ruolo').value.trim();
+      const c = document.getElementById('input-contesto').value.trim();
+      const o1 = document.getElementById('input-obiettivo').value.trim();
+      const v = document.getElementById('input-vincoli').value.trim();
+      const o2 = document.getElementById('input-output').value.trim();
+
+      const t = i18n[currentLang];
+      let outputText = "";
+
+      if (!r && !c && !o1 && !v && !o2) {
+        outputText = currentLang === 'it' 
+          ? "[ Compila i campi a sinistra o seleziona un caso studio dalla Libreria per vedere l'anteprima del prompt qui... ]"
+          : "[ Fill in the fields on the left or select a case study from the Library to preview the generated prompt here... ]";
+      } else {
+        if (r) outputText += `${t.promptPrefixR}\n${r}\n\n`;
+        if (c) outputText += `${t.promptPrefixC}\n${c}\n\n`;
+        if (o1) outputText += `${t.promptPrefixO1}\n${o1}\n\n`;
+        if (v) outputText += `${t.promptPrefixV}\n${v}\n\n`;
+        if (o2) outputText += `${t.promptPrefixO2}\n${o2}`;
+      }
+
+      document.getElementById('output-prompt').textContent = outputText.trim();
+    }
+
+    // Clear Builder Form
+    function resetForm() {
+      document.getElementById('input-ruolo').value = '';
+      document.getElementById('input-contesto').value = '';
+      document.getElementById('input-obiettivo').value = '';
+      document.getElementById('input-vincoli').value = '';
+      document.getElementById('input-output').value = '';
+      updatePrompt();
+    }
+
+    // Copy Prompt to Clipboard
+    function copyGeneratedPrompt() {
+      const text = document.getElementById('output-prompt').textContent;
+      if (!text || text.startsWith('[')) return;
+      navigator.clipboard.writeText(text).then(() => {
+        showToast(i18n[currentLang].toastCopied);
+      });
+    }
+
+    // Toast Notification Display
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-message').innerText = message;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 2500);
+    }
+
+    // Filter Library Controls
+    function setRoleFilter(role, btnElement) {
+      activeRoleFilter = role;
+      activeSubCatFilter = 'all';
+
+      // Button active styles
+      document.querySelectorAll('.role-filter-btn').forEach(btn => {
+        btn.classList.remove('bg-indigo-600', 'text-white');
+        btn.classList.add('bg-slate-100', 'text-slate-600');
+      });
+      btnElement.classList.remove('bg-slate-100', 'text-slate-600');
+      btnElement.classList.add('bg-indigo-600', 'text-white');
+
+      renderSubcategoryFilters();
+      filterLibrary();
+    }
+
+    function setSubCatFilter(subCat, btnElement) {
+      activeSubCatFilter = subCat;
+      document.querySelectorAll('.subcat-filter-btn').forEach(btn => {
+        btn.classList.remove('subcat-btn-active');
+      });
+      btnElement.classList.add('subcat-btn-active');
+      filterLibrary();
+    }
+
+    function renderSubcategoryFilters() {
+      const container = document.getElementById('subcat-filter-container');
+      container.innerHTML = '';
+
+      let itemsToScan = presetLibrary;
+      if (activeRoleFilter !== 'all') {
+        itemsToScan = presetLibrary.filter(i => i.roleCategory === activeRoleFilter);
+      }
+
+      const subCats = Array.from(new Set(itemsToScan.map(i => i.subCategory)));
+      const t = i18n[currentLang];
+
+      // All Pill
+      const allPill = document.createElement('button');
+      allPill.className = `subcat-filter-btn px-2.5 py-1 rounded-md border text-xs font-medium transition ${activeSubCatFilter === 'all' ? 'subcat-btn-active' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'}`;
+      allPill.innerText = t.subcatAll;
+      allPill.onclick = () => setSubCatFilter('all', allPill);
+      container.appendChild(allPill);
+
+      subCats.forEach(sub => {
+        const displayName = currentLang === 'en' && subCatTranslations.en[sub] ? subCatTranslations.en[sub] : sub;
+        const pill = document.createElement('button');
+        pill.className = `subcat-filter-btn px-2.5 py-1 rounded-md border text-xs font-medium transition ${activeSubCatFilter === sub ? 'subcat-btn-active' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'}`;
+        pill.innerText = displayName;
+        pill.onclick = () => setSubCatFilter(sub, pill);
+        container.appendChild(pill);
+      });
+    }
+
+    function resetLibraryFilters() {
+      activeRoleFilter = 'all';
+      activeSubCatFilter = 'all';
+      document.getElementById('library-search').value = '';
+      
+      const allBtn = document.getElementById('filter-role-all');
+      setRoleFilter('all', allBtn);
+    }
+
+    // Filter and Render Preset Grid Cards
+    function filterLibrary() {
+      const searchTerm = document.getElementById('library-search').value.toLowerCase().trim();
+      const grid = document.getElementById('library-grid');
+      grid.innerHTML = '';
+
+      const filtered = presetLibrary.filter(item => {
+        // Role match
+        if (activeRoleFilter !== 'all' && item.roleCategory !== activeRoleFilter) return false;
+        // Subcategory match
+        if (activeSubCatFilter !== 'all' && item.subCategory !== activeSubCatFilter) return false;
+
+        // Search Match
+        if (searchTerm) {
+          const title = (item.title[currentLang] || item.title['it']).toLowerCase();
+          const r = (item.ruolo[currentLang] || item.ruolo['it']).toLowerCase();
+          const c = (item.contesto[currentLang] || item.contesto['it']).toLowerCase();
+          const o1 = (item.obiettivo[currentLang] || item.obiettivo['it']).toLowerCase();
+          const sub = item.subCategory.toLowerCase();
+          return title.includes(searchTerm) || r.includes(searchTerm) || c.includes(searchTerm) || o1.includes(searchTerm) || sub.includes(searchTerm);
+        }
+
+        return true;
+      });
+
+      // Update counter
+      document.getElementById('results-count').innerText = i18n[currentLang].resultsCount(filtered.length, presetLibrary.length);
+
+      // Render Cards
+      const t = i18n[currentLang];
+      filtered.forEach(item => {
+        const itemTitle = item.title[currentLang] || item.title['it'];
+        const itemRole = item.badge[currentLang] || item.badge['it'];
+        const itemSubCat = currentLang === 'en' && subCatTranslations.en[item.subCategory] ? subCatTranslations.en[item.subCategory] : item.subCategory;
+        const itemR = item.ruolo[currentLang] || item.ruolo['it'];
+        const itemC = item.contesto[currentLang] || item.contesto['it'];
+        const itemO1 = item.obiettivo[currentLang] || item.obiettivo['it'];
+
+        const card = document.createElement('div');
+        card.className = "bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col justify-between space-y-4";
+        card.innerHTML = `
+          <div class="space-y-3">
+            <div class="flex items-center justify-between gap-2 flex-wrap">
+              <span class="px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-[11px] font-bold uppercase tracking-wide border border-indigo-100">
+                ${itemRole}
+              </span>
+              <span class="text-[11px] font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded">
+                ${itemSubCat}
+              </span>
+            </div>
+            <h3 class="font-bold text-slate-900 text-base leading-snug">${itemTitle}</h3>
+            
+            <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-1.5 text-xs text-slate-600 font-mono">
+              <p><strong class="text-blue-600">R:</strong> ${itemR}</p>
+              <p><strong class="text-emerald-600">C:</strong> ${itemC}</p>
+              <p><strong class="text-amber-600">O:</strong> ${itemO1}</p>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between gap-2 pt-2 border-t border-slate-100">
+            <button onclick="loadPresetIntoBuilder('${item.id}')" class="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold rounded-lg text-xs transition flex items-center gap-1.5">
+              <i class="fa-solid fa-arrow-right-to-bracket text-xs"></i>
+              <span>${t.useTemplate}</span>
+            </button>
+            <button onclick="copyPresetDirectly('${item.id}')" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg text-xs transition flex items-center gap-1.5">
+              <i class="fa-regular fa-copy text-xs"></i>
+              <span>${t.copyTemplate}</span>
+            </button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // Load Specific Preset into Prompt Builder
+    function loadPresetIntoBuilder(presetId) {
+      const item = presetLibrary.find(i => i.id === presetId);
+      if (!item) return;
+
+      document.getElementById('input-ruolo').value = item.ruolo[currentLang] || item.ruolo['it'];
+      document.getElementById('input-contesto').value = item.contesto[currentLang] || item.contesto['it'];
+      document.getElementById('input-obiettivo').value = item.obiettivo[currentLang] || item.obiettivo['it'];
+      document.getElementById('input-vincoli').value = item.vincoli[currentLang] || item.vincoli['it'];
+      document.getElementById('input-output').value = item.output[currentLang] || item.output['it'];
+
+      updatePrompt();
+      switchTab('builder');
+      showToast(i18n[currentLang].toastLoaded);
+    }
+
+    // Copy Full Formatted Preset Direct from Library Card
+    function copyPresetDirectly(presetId) {
+      const item = presetLibrary.find(i => i.id === presetId);
+      if (!item) return;
+
+      const t = i18n[currentLang];
+      const r = item.ruolo[currentLang] || item.ruolo['it'];
+      const c = item.contesto[currentLang] || item.contesto['it'];
+      const o1 = item.obiettivo[currentLang] || item.obiettivo['it'];
+      const v = item.vincoli[currentLang] || item.vincoli['it'];
+      const o2 = item.output[currentLang] || item.output['it'];
+
+      const formatted = `${t.promptPrefixR}\n${r}\n\n${t.promptPrefixC}\n${c}\n\n${t.promptPrefixO1}\n${o1}\n\n${t.promptPrefixV}\n${v}\n\n${t.promptPrefixO2}\n${o2}`;
+      navigator.clipboard.writeText(formatted).then(() => {
+        showToast(i18n[currentLang].toastCopied);
+      });
+    }
+
+    // Initialization on DOM Load
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedLang = localStorage.getItem('school_prompt_lang') || 'it';
+      setLanguage(savedLang);
+    });
+  </script>
+</body>
+</html>
